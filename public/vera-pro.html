@@ -4613,20 +4613,41 @@
           console.log('[validateSession] Response from server:', {
             valid: data.valid,
             status: response.status,
-            error: data.error
+            error: data.error,
+            expired: data.expired
           });
           
-          if (!data.valid) {
+          // CRITICAL: Check for expired flag from backend
+          if (!data.valid || data.expired) {
             console.warn('❌ Session validation failed:', data.error);
+            const userEmail = localStorage.getItem('userEmail') || '';
             localStorage.removeItem('userEmail');
             localStorage.removeItem('trialEnd');
-            window.location.href = `/checkout?email=${userEmail}&reason=${encodeURIComponent(data.error || 'Session expired')}`;
+            localStorage.removeItem('trialEndsAt');
+            window.location.href = `/checkout?email=${encodeURIComponent(userEmail)}&reason=${encodeURIComponent(data.error || 'Session expired')}&expired=true`;
             return false;
           }
           
           // Update localStorage with current session info
           localStorage.setItem('userEmail', userEmail);
           localStorage.setItem('trialEnd', data.trialEnd || trialEnd);
+          
+          // SYNC: Update trial timer if backend data differs from local
+          if (data.trial && data.trialEnd) {
+            const backendTrialEnd = new Date(data.trialEnd);
+            const localTrialEndStr = localStorage.getItem('trialEndsAt');
+            const localTrialEnd = localTrialEndStr ? new Date(parseInt(localTrialEndStr)) : null;
+            
+            // If backend trial time differs significantly (more than 1 minute), update local
+            if (!localTrialEnd || Math.abs(backendTrialEnd - localTrialEnd) > 60000) {
+              console.log('📅 Syncing trial end time from backend');
+              console.log(`   - Backend: ${backendTrialEnd.toISOString()}`);
+              console.log(`   - Local: ${localTrialEnd ? localTrialEnd.toISOString() : 'none'}`);
+              localStorage.setItem('trialEndsAt', backendTrialEnd.getTime().toString());
+              trialEndTime = backendTrialEnd;
+              updateTrialTimer();
+            }
+          }
           
           // Update trial badge if trial is active
           if (data.trial && data.trialEnd) {

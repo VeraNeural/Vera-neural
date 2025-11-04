@@ -202,6 +202,22 @@ module.exports = async (req, res) => {
       });
     }
 
+    // CRITICAL: Check if trial has expired (blocks localStorage bypass)
+    if (user.trial_end) {
+      const trialEnd = new Date(user.trial_end);
+      const now = new Date();
+      
+      if (trialEnd < now) {
+        console.log(`❌ TRIAL EXPIRED for ${user.email} - trial ended at ${trialEnd.toISOString()}`);
+        return res.status(401).json({
+          valid: false,
+          error: 'Trial expired',
+          expired: true,
+          trial_end: user.trial_end
+        });
+      }
+    }
+
     // CREATE: Generate new session token after successful authentication
     if (action === 'create') {
       const sessionToken = await createSession(email);
