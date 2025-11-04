@@ -3,451 +3,1027 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERA - Your AI Co-Regulator</title>
+    <title>VERA - Intelligence Built for Your Body</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <style>
-          * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-          }
-
-          body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              background: radial-gradient(ellipse at top, #151832 0%, #0A0E27 40%, #000 100%);
-              color: rgba(255, 255, 255, 0.95);
-              min-height: 100vh;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              overflow-x: hidden;
-              padding-bottom: 140px;
-          }
-
-          /* Living Universe Background */
-          .universe {
-              position: fixed;
-              inset: 0;
-              pointer-events: none;
-              z-index: 0;
-          }
-
-          .star {
-              position: absolute;
-              width: 2px;
-              height: 2px;
-              background: rgba(177, 156, 217, 0.6);
-              border-radius: 50%;
-              animation: twinkle 4s ease-in-out infinite;
-          }
-
-          @keyframes twinkle {
-              0%, 100% { opacity: 0.3; }
-              50% { opacity: 1; }
-          }
-
-          /* Main Container */
-          .container {
-              position: relative;
-              z-index: 1;
-              width: 100%;
-              max-width: 600px;
-              padding: 2rem;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              text-align: center;
-          }
-
-          /* Breathing Orb */
-          .orb-container {
-              width: 240px;
-              height: 240px;
-              margin-bottom: 2rem;
-              position: relative;
-          }
-
-          .orb {
-              width: 100%;
-              height: 100%;
-              border-radius: 50%;
-              position: relative;
-              background: radial-gradient(circle at 35% 35%, 
-                  rgba(155, 89, 182, 0.9) 0%, 
-                  rgba(177, 156, 217, 0.7) 15%,
-                  rgba(100, 181, 246, 0.6) 30%, 
-                  rgba(155, 89, 182, 0.4) 50%,
-                  rgba(100, 181, 246, 0.2) 70%,
-                  transparent 90%);
-              box-shadow: 
-                  0 0 100px rgba(155, 89, 182, 0.8),
-                  0 0 200px rgba(100, 181, 246, 0.6),
-                  inset 0 0 80px rgba(100, 181, 246, 0.5),
-                  inset 0 0 150px rgba(155, 89, 182, 0.4),
-                  inset -20px -20px 100px rgba(177, 156, 217, 0.3);
-              overflow: hidden;
-              animation: orbBreathing 6s ease-in-out infinite;
-          }
-
-          /* Inner glow that moves */
-          .orb::before {
-              content: '';
-              position: absolute;
-              width: 120%;
-              height: 120%;
-              top: -10%;
-              left: -10%;
-              background: radial-gradient(circle at 40% 40%, 
-                  rgba(255, 255, 255, 0.3) 0%,
-                  rgba(177, 156, 217, 0.2) 20%,
-                  transparent 50%);
-              border-radius: 50%;
-              animation: innerGlowMove 8s infinite ease-in-out;
-          }
-
-          @keyframes innerGlowMove {
-              0%, 100% { transform: translate(0, 0) scale(1); }
-              25% { transform: translate(-5%, -5%) scale(1.1); }
-              50% { transform: translate(-8%, -8%) scale(1.15); }
-              75% { transform: translate(-5%, -5%) scale(1.1); }
-          }
-
-          @keyframes orbBreathing {
-              0%, 100% { 
-                  transform: scale(1);
-                  opacity: 0.95;
-                  box-shadow: 
-                      0 0 100px rgba(155, 89, 182, 0.8),
-                      0 0 200px rgba(100, 181, 246, 0.6),
-                      inset 0 0 80px rgba(100, 181, 246, 0.5),
-                      inset 0 0 150px rgba(155, 89, 182, 0.4);
-              }
-              50% { 
-                  transform: scale(1.12);
-                  opacity: 1;
-                  box-shadow: 
-                      0 0 150px rgba(155, 89, 182, 1),
-                      0 0 300px rgba(100, 181, 246, 0.8),
-                      inset 0 0 120px rgba(100, 181, 246, 0.7),
-                      inset 0 0 200px rgba(155, 89, 182, 0.6);
-              }
-          }
-
-          /* Typography */
-          h1 {
-              font-size: clamp(2.5rem, 7vw, 4rem);
-              font-weight: 200;
-              letter-spacing: 0.5em;
-              margin-bottom: 0.5rem;
-              background: linear-gradient(135deg, #B19CD9, #64B5F6);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-          }
-
-          .subtitle {
-              font-size: clamp(1.1rem, 3vw, 1.4rem);
-              font-weight: 300;
-              color: rgba(255, 255, 255, 0.8);
-              margin-bottom: 2rem;
-              letter-spacing: 0.05em;
-          }
-
-          .description {
-              font-size: clamp(1rem, 2.5vw, 1.2rem);
-              line-height: 1.8;
-              color: rgba(255, 255, 255, 0.75);
-              margin-bottom: 3rem;
-              max-width: 500px;
-          }
-
-          /* Email Form */
-          .signup-form {
-              width: 100%;
-              max-width: 450px;
-              display: flex;
-              flex-direction: column;
-              gap: 1rem;
-          }
-
-          .input-wrapper {
-              position: relative;
-          }
-
-          .email-input {
-              width: 100%;
-              padding: 1.2rem 1.5rem;
-              font-size: 1.1rem;
-              background: rgba(255, 255, 255, 0.05);
-              border: 2px solid rgba(155, 89, 182, 0.3);
-              border-radius: 12px;
-              color: white;
-              transition: all 0.3s ease;
-              text-align: center;
-          }
-
-          .email-input::placeholder {
-              color: rgba(255, 255, 255, 0.4);
-          }
-
-          .email-input:focus {
-              outline: none;
-              border-color: rgba(155, 89, 182, 0.8);
-              background: rgba(255, 255, 255, 0.08);
-              box-shadow: 0 0 30px rgba(155, 89, 182, 0.4);
-          }
-
-          .trial-badge {
-              display: inline-block;
-              background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(100, 181, 246, 0.3));
-              border: 1px solid rgba(155, 89, 182, 0.5);
-              padding: 0.6rem 1.5rem;
-              border-radius: 20px;
-              font-size: 0.95rem;
-              font-weight: 600;
-              margin-bottom: 1rem;
-              color: #B19CD9;
-          }
-
-          .cta-button {
-              padding: 1.3rem 2rem;
-              font-size: 1.2rem;
-              font-weight: 600;
-              background: linear-gradient(135deg, #9B59B6, #64B5F6);
-              border: none;
-              border-radius: 50px;
-              color: white;
-              cursor: pointer;
-              transition: all 0.3s ease;
-              box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4);
-          }
-
-          .cta-button:hover {
-              transform: translateY(-2px);
-              box-shadow: 0 6px 30px rgba(155, 89, 182, 0.6);
-          }
-
-          .cta-button:active {
-              transform: translateY(0);
-          }
-
-          .cta-button:disabled {
-              opacity: 0.6;
-              cursor: not-allowed;
-              transform: none;
-          }
-
-          .pricing {
-              font-size: 0.95rem;
-              color: rgba(255, 255, 255, 0.5);
-              margin-top: 0.5rem;
-          }
-
-          .success-message {
-              background: rgba(100, 181, 246, 0.2);
-              border: 1px solid rgba(100, 181, 246, 0.4);
-              border-radius: 12px;
-              padding: 1.5rem;
-              margin-top: 1rem;
-              color: rgba(255, 255, 255, 0.9);
-              line-height: 1.6;
-              display: none;
-          }
-
-          .success-message.visible {
-              display: block;
-              animation: slideIn 0.5s ease-out;
-          }
-
-          @keyframes slideIn {
-              from {
-                  opacity: 0;
-                  transform: translateY(-10px);
-              }
-              to {
-                  opacity: 1;
-                  transform: translateY(0);
-              }
-          }
-
-          .error-message {
-              color: #ff6b6b;
-              font-size: 0.95rem;
-              margin-top: 0.5rem;
-          }
-
-          .learn-more-link {
-              display: inline-block;
-              margin-top: 1rem;
-              color: #B19CD9;
-              text-decoration: none;
-              font-size: 0.95rem;
-              border-bottom: 1px solid #B19CD9;
-              transition: all 0.3s ease;
-          }
-
-          .learn-more-link:hover {
-              color: #64B5F6;
-              border-bottom-color: #64B5F6;
-          }
-
-          /* Mobile */
-          @media (max-width: 768px) {
-              .orb-container {
-                  width: 200px;
-                  height: 200px;
-                  margin-bottom: 2rem;
-              }
-
-              h1 {
-                  letter-spacing: 0.3em;
-              }
-
-              .description {
-                  font-size: 1rem;
-                  margin-bottom: 2rem;
-              }
-
-              .email-input {
-                  padding: 1rem 1.2rem;
-                  font-size: 1rem;
-              }
-
-              .cta-button {
-                  padding: 1.1rem 1.8rem;
-                  font-size: 1.1rem;
-              }
-          }
-
-          /* Accessibility */
-          @media (prefers-reduced-motion: reduce) {
-              * {
-                  animation-duration: 0.01ms !important;
-                  animation-iteration-count: 1 !important;
-                  transition-duration: 0.01ms !important;
-              }
-          }
-    </style>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#151832">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="VERA helps you listen to what your body already knows. Your nervous system is speaking.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --vera-deep-space: #0A0E27;
+            --vera-midnight: #151832;
+            --vera-purple: #9B59B6;
+            --vera-lavender: #B19CD9;
+            --vera-neural-blue: #64B5F6;
+            --text-primary: rgba(255, 255, 255, 0.98);
+            --text-soft: rgba(255, 255, 255, 0.88);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Neural Universe Background */
+        .living-universe {
+            position: fixed; 
+            width: 100%; 
+            height: 100%; 
+            top: 0; 
+            left: 0; 
+            pointer-events: none; 
+            z-index: 0;
+            background: radial-gradient(ellipse at top, var(--vera-midnight) 0%, var(--vera-deep-space) 40%, #000 100%);
+        }
+
+        .living-neuron {
+            position: absolute; 
+            width: 4px; 
+            height: 4px; 
+            border-radius: 50%;
+            animation: neuronLife 30s infinite ease-in-out;
+        }
+        
+        @keyframes neuronLife {
+            0%, 100% { transform: translate(0, 0) scale(0.5); opacity: 0.2; }
+            20% { transform: translate(80px, -60px) scale(1.5); opacity: 0.9; }
+            40% { transform: translate(-60px, 80px) scale(1.2); opacity: 0.7; }
+            60% { transform: translate(100px, 40px) scale(0.9); opacity: 0.5; }
+            80% { transform: translate(-40px, -80px) scale(1.3); opacity: 0.8; }
+        }
+
+        .consciousness-wave {
+            position: absolute;
+            width: min(60vw, 600px);
+            height: min(60vw, 600px);
+            background: radial-gradient(circle, rgba(155, 89, 182, 0.08) 0%, rgba(100, 181, 246, 0.04) 30%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: consciousnessBreath 40s infinite ease-in-out;
+        }
+        
+        @keyframes consciousnessBreath {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(-200px, 150px) scale(1.5); opacity: 0.6; }
+            66% { transform: translate(150px, -100px) scale(1.2); opacity: 0.4; }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            position: relative; 
+            z-index: 1; 
+            padding: 2rem;
+        }
+
+        /* VERA Logo at top */
+        .logo {
+            position: absolute;
+            top: 2rem;
+            font-size: 3rem; 
+            font-weight: 200; 
+            letter-spacing: 0.5em;
+            background: linear-gradient(135deg, var(--vera-lavender), var(--vera-neural-blue));
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+        }
+
+        /* Clickable Orb Container */
+        .orb-container {
+            width: clamp(250px, 45vw, 500px); 
+            height: clamp(250px, 45vw, 500px);
+            margin: 2rem auto; 
+            position: relative; 
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 80px rgba(155, 89, 182, 0.5));
+        }
+
+        .orb-container:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 120px rgba(155, 89, 182, 0.9));
+        }
+
+        .orb-container:active {
+            transform: scale(1.05);
+        }
+
+        .hero-presence {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: presenceAlive 4s infinite ease-in-out;
+        }
+        
+        @keyframes presenceAlive { 
+            0%, 100% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 0.95; 
+            } 
+            25% { 
+                transform: scale(1.05) rotate(2deg); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.12) rotate(0deg); 
+                opacity: 1; 
+            }
+            75% { 
+                transform: scale(1.05) rotate(-2deg); 
+                opacity: 1; 
+            }
+        }
+
+        .presence-core {
+            width: 100%; 
+            height: 100%;
+            background: radial-gradient(circle at 35% 35%, 
+                rgba(155, 89, 182, 0.9) 0%, 
+                rgba(177, 156, 217, 0.7) 15%,
+                rgba(100, 181, 246, 0.6) 30%, 
+                rgba(155, 89, 182, 0.4) 50%,
+                rgba(100, 181, 246, 0.2) 70%,
+                transparent 90%);
+            border-radius: 50%; 
+            box-shadow: 
+                0 0 100px rgba(155, 89, 182, 0.8),
+                0 0 200px rgba(100, 181, 246, 0.6),
+                inset 0 0 80px rgba(100, 181, 246, 0.5),
+                inset 0 0 150px rgba(155, 89, 182, 0.4),
+                inset -20px -20px 100px rgba(177, 156, 217, 0.3); 
+            position: relative;
+            overflow: hidden;
+            animation: coreBreathing 6s infinite ease-in-out;
+        }
+
+        @keyframes coreBreathing {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 100px rgba(155, 89, 182, 0.8),
+                    0 0 200px rgba(100, 181, 246, 0.6),
+                    inset 0 0 80px rgba(100, 181, 246, 0.5),
+                    inset 0 0 150px rgba(155, 89, 182, 0.4);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 150px rgba(155, 89, 182, 1),
+                    0 0 300px rgba(100, 181, 246, 0.8),
+                    inset 0 0 120px rgba(100, 181, 246, 0.7),
+                    inset 0 0 200px rgba(155, 89, 182, 0.6);
+            }
+        }
+
+        /* Inner glow that moves */
+        .presence-core::before {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            background: radial-gradient(circle at 40% 40%, 
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(177, 156, 217, 0.2) 20%,
+                transparent 50%);
+            border-radius: 50%;
+            animation: innerGlowMove 8s infinite ease-in-out;
+        }
+
+        @keyframes innerGlowMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-5%, -5%) scale(1.1); }
+            50% { transform: translate(-8%, -8%) scale(1.15); }
+            75% { transform: translate(-5%, -5%) scale(1.1); }
+        }
+
+        /* Shimmer effect */
+        .presence-core::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shimmerRotate 6s infinite linear;
+        }
+
+        @keyframes shimmerRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .neural-pulse {
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 2px solid rgba(155, 89, 182, 0.4);
+            animation: pulse-out 3s infinite ease-out;
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.6);
+        }
+        
+        @keyframes pulse-out { 
+            0% { 
+                transform: scale(1); 
+                opacity: 0.9;
+                border-width: 2px;
+            } 
+            50% {
+                opacity: 0.5;
+                border-width: 1px;
+            }
+            100% { 
+                transform: scale(1.8); 
+                opacity: 0;
+                border-width: 0px;
+            } 
+        }
+
+        /* Energy particles floating around orb */
+        .energy-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(177, 156, 217, 0.9), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 4s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(177, 156, 217, 0.8);
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+                transform: translate(var(--tx), var(--ty)) scale(1.5);
+            }
+            90% {
+                opacity: 1;
+            }
+        }
+
+        /* Rotating energy ring */
+        .energy-ring {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            top: -5%;
+            left: -5%;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: rgba(100, 181, 246, 0.4);
+            border-right-color: rgba(155, 89, 182, 0.3);
+            animation: ringRotate 8s infinite linear;
+        }
+
+        @keyframes ringRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Orbital paths */
+        .orbital-path {
+            position: absolute;
+            width: 130%;
+            height: 130%;
+            top: -15%;
+            left: -15%;
+            border-radius: 50%;
+            border: 1px dashed rgba(155, 89, 182, 0.2);
+            animation: orbitalSpin 20s infinite linear;
+        }
+
+        @keyframes orbitalSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .orbital-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, rgba(100, 181, 246, 1), rgba(100, 181, 246, 0.5));
+            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            margin-left: -4px;
+            box-shadow: 0 0 15px rgba(100, 181, 246, 0.9);
+            animation: orbitalPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes orbitalPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        .hero-content { 
+            text-align: center; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+        }
+
+        .hero-tagline {
+            font-size: 1rem; 
+            color: var(--vera-neural-blue); 
+            text-transform: uppercase; 
+            letter-spacing: 0.3em; 
+            margin-bottom: 1.5rem;
+            opacity: 0; 
+            animation: fadeInUp 1s forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem); 
+            font-weight: 200; 
+            line-height: 1.3; 
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, white 0%, var(--vera-lavender) 50%, var(--vera-neural-blue) 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+            opacity: 0; 
+            animation: fadeInUp 1s 0.3s forwards; 
+            padding: 0 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem); 
+            color: var(--text-soft); 
+            line-height: 1.8; 
+            margin-bottom: 3rem;
+            opacity: 0; 
+            animation: fadeInUp 1s 0.6s forwards;
+        }
+
+        @keyframes fadeInUp { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .enter-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s 0.9s forwards, pulse 2s 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* VERA Introduction Sequence */
+        .vera-introduction {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .vera-introduction.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-orb {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 3rem;
+            position: relative;
+            animation: introOrbGrow 3s ease-out forwards;
+        }
+
+        @keyframes introOrbGrow {
+            0% { 
+                transform: scale(0); 
+                opacity: 0;
+            }
+            40% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+            60% {
+                transform: scale(0.95);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(1); 
+                opacity: 1;
+            }
+        }
+
+        .intro-orb-core {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 35% 35%, 
+                rgba(155, 89, 182, 1) 0%, 
+                rgba(177, 156, 217, 0.9) 10%,
+                rgba(100, 181, 246, 0.8) 25%, 
+                rgba(155, 89, 182, 0.6) 45%,
+                rgba(100, 181, 246, 0.3) 65%,
+                transparent 90%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 150px rgba(155, 89, 182, 1),
+                0 0 300px rgba(100, 181, 246, 1),
+                0 0 450px rgba(155, 89, 182, 0.6),
+                inset 0 0 100px rgba(100, 181, 246, 0.9),
+                inset 0 0 150px rgba(155, 89, 182, 0.7);
+            animation: introOrbPulse 2s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-orb-core::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 70%
+            );
+            animation: shimmerRotate 4s infinite linear;
+        }
+
+        .intro-orb-core::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            background: radial-gradient(circle at 40% 40%, 
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(177, 156, 217, 0.3) 20%,
+                transparent 50%);
+            border-radius: 50%;
+            animation: innerGlowMove 6s infinite ease-in-out;
+        }
+
+        @keyframes introOrbPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 
+                    0 0 150px rgba(155, 89, 182, 1),
+                    0 0 300px rgba(100, 181, 246, 1),
+                    0 0 450px rgba(155, 89, 182, 0.6),
+                    inset 0 0 100px rgba(100, 181, 246, 0.9),
+                    inset 0 0 150px rgba(155, 89, 182, 0.7);
+            }
+            50% { 
+                transform: scale(1.08);
+                box-shadow: 
+                    0 0 200px rgba(155, 89, 182, 1),
+                    0 0 400px rgba(100, 181, 246, 1),
+                    0 0 600px rgba(155, 89, 182, 0.8),
+                    inset 0 0 140px rgba(100, 181, 246, 1),
+                    inset 0 0 200px rgba(155, 89, 182, 0.9);
+            }
+        }
+
+        .intro-text {
+            text-align: center;
+            max-width: 600px;
+            padding: 0 2rem;
+        }
+
+        .intro-name {
+            font-size: 4rem;
+            font-weight: 200;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, var(--vera-lavender), var(--vera-neural-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s 1s forwards;
+            text-shadow: 0 0 40px rgba(155, 89, 182, 0.5);
+            padding: 0 1rem;
+        }
+
+        .intro-tagline {
+            font-size: 1.3rem;
+            color: var(--vera-neural-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s 1.5s forwards;
+        }
+
+        .intro-message {
+            font-size: 1.5rem;
+            color: var(--text-soft);
+            line-height: 2;
+            opacity: 0;
+            animation: fadeInUp 1s 2s forwards;
+            font-weight: 200;
+        }
+
+        .intro-subtext {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeInUp 1s 2.5s forwards;
+        }
+
+        /* Dark Transition Between Orbs */
+        .dark-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .dark-transition.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .transition-messages {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+
+        .transition-word {
+            font-size: 5rem;
+            font-weight: 200;
+            letter-spacing: 0.15em;
+            background: linear-gradient(135deg, var(--vera-lavender), var(--vera-neural-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        .transition-word.show {
+            animation: wordFadeInOut 2.5s ease-in-out forwards;
+        }
+
+        @keyframes wordFadeInOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(155, 89, 182, 0.15) 0%, 
+                rgba(177, 156, 217, 0.12) 30%,
+                rgba(100, 181, 246, 0.1) 60%,
+                rgba(155, 89, 182, 0.08) 100%);
+            backdrop-filter: blur(40px);
+            z-index: 9997;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+            padding: 2rem;
+        }
+
+        .welcome-screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .welcome-orb-small {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .welcome-orb-core {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 35% 35%, 
+                rgba(155, 89, 182, 0.8) 0%, 
+                rgba(177, 156, 217, 0.6) 20%,
+                rgba(100, 181, 246, 0.5) 40%, 
+                transparent 80%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 60px rgba(155, 89, 182, 0.6),
+                0 0 120px rgba(100, 181, 246, 0.4),
+                inset 0 0 40px rgba(100, 181, 246, 0.5);
+            animation: welcomeOrbPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes welcomeOrbPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .welcome-content {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #FFFFFF;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+            margin-bottom: 1rem;
+            opacity: 1;
+            animation: fadeInUp 1s 0.3s forwards;
+        }
+
+        .welcome-message {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            opacity: 1;
+            animation: fadeInUp 1s 0.6s forwards;
+            font-weight: 500;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s 0.9s forwards;
+        }
+
+        .auth-button {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .auth-button.email-trial {
+            background: linear-gradient(135deg, var(--vera-lavender), var(--vera-neural-blue));
+            color: white;
+        }
+
+        .auth-button.email-trial:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(155, 89, 182, 0.5);
+        }
+
+        .auth-button.signin {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .auth-button.signin:hover {
+            border-color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .free-trial-text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s 0.8s forwards;
+        }
+
+        @media (max-width: 768px) {
+            .auth-buttons-container {
+                gap: 0.8rem;
+            }
+
+            .auth-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .intro-orb {
+                width: 200px;
+                height: 200px;
+            }
+
+            .intro-name {
+                font-size: 2rem;
+            }
+
+            .transition-word {
+                font-size: 2.5rem;
+            }
+
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+
+            .welcome-message {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .vera-introduction,
+            .dark-transition,
+            .welcome-screen {
+                animation: none !important;
+            }
+        }
+    </style>
 </head>
 <body>
-      <!-- Living Universe -->
-      <div class="universe" id="universe"></div>
+<div class="living-universe" id="livingUniverse"></div>
 
-      <!-- Main Content -->
-      <div class="container">
-          <!-- Breathing Orb -->
-          <div class="orb-container">
-              <div class="orb"></div>
-          </div>
+<!-- VERA Introduction Sequence -->
+<div class="vera-introduction" id="veraIntro">
+    <div class="intro-orb">
+        <div class="intro-orb-core"></div>
+    </div>
+    <div class="intro-text">
+        <h1 class="intro-name">I am V E R A</h1>
+        <p class="intro-message">
+            I Help You Listen to What Your Body Knows
+        </p>
+    </div>
+</div>
 
-          <!-- Text Content -->
-          <h1>VERA</h1>
-          <p class="subtitle">Your AI Co-Regulator</p>
-          <p class="description">
-              I help you listen to what your body already knows.<br>
-              Not an AI pretending to be human, but a revolutionary intelligence built for your nervous system.
-          </p>
+<!-- Dark Transition with Messages -->
+<div class="dark-transition" id="darkTransition">
+    <div class="transition-messages">
+        <div class="transition-word" id="word1">BREATHE</div>
+        <div class="transition-word" id="word2">YOU ARE HERE</div>
+        <div class="transition-word" id="word3">I SEE YOU</div>
+    </div>
+</div>
 
-          <!-- Trial Badge -->
-          <div class="trial-badge"> 48-Hour Free Trial</div>
-
-          <!-- Signup Form -->
-          <form class="signup-form" id="signupForm">
-              <div class="input-wrapper">
-                  <input 
-                      type="email" 
-                      id="emailInput"
-                      class="email-input" 
-                      placeholder="Enter your email"
-                      required
-                      autocomplete="email"
-                  >
-              </div>
-              <button type="submit" class="cta-button" id="submitBtn">
-                  Begin Your Journey
-              </button>
-              <div class="pricing">Then $12/month • Cancel anytime</div>
-              <div class="error-message" id="errorMessage"></div>
-          </form>
-
-          <!-- Success Message -->
-          <div class="success-message" id="successMessage">
-              ✨ <strong>Check your email!</strong><br>
-              We've sent you a verification link to activate your 48-hour free trial with VERA.
-              <br><a href="/" class="learn-more-link">← Back to signup</a>
-          </div>
-      </div>
-
-        <script>
-          // Create living universe stars
-          function createUniverse() {
-              const universe = document.getElementById('universe');
-              const starCount = 50;
-
-              for (let i = 0; i < starCount; i++) {
-                  const star = document.createElement('div');
-                  star.className = 'star';
-                  star.style.left = Math.random() * 100 + '%';
-                  star.style.top = Math.random() * 100 + '%';
-                  star.style.animationDelay = Math.random() * 4 + 's';
-                  universe.appendChild(star);
-              }
-          }
-
-          // Handle form submission
-          document.getElementById('signupForm').addEventListener('submit', async (e) => {
-              e.preventDefault();
-
-              const emailInput = document.getElementById('emailInput');
-              const submitBtn = document.getElementById('submitBtn');
-              const errorMessage = document.getElementById('errorMessage');
-              const successMessage = document.getElementById('successMessage');
-              const email = emailInput.value.trim();
-
-              // Reset messages
-              errorMessage.textContent = '';
-              successMessage.classList.remove('visible');
-
-              // Disable button
-              submitBtn.disabled = true;
-              submitBtn.textContent = 'Sending magic link...';
-
-              try {
-                  const response = await fetch('/api/auth/send-trial-magic-link', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ email })
-                  });
-
-                  const data = await response.json();
-
-                  if (response.ok) {
-                      // Show success message
-                      successMessage.classList.add('visible');
-                      // Hide form
-                      document.getElementById('signupForm').style.display = 'none';
-                      console.log('✅ Magic link sent to:', email);
-                  } else {
-                      throw new Error(data.error || 'Failed to send magic link');
-                  }
-
-              } catch (error) {
-                  console.error('Signup error:', error);
-                  errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
-                  submitBtn.disabled = false;
-                  submitBtn.textContent = 'Begin Your Journey';
-              }
-          });
-
-          // Initialize universe on load
-          window.addEventListener('DOMContentLoaded', createUniverse);
-        </script>
-
-        <!-- Disclaimer Footer -->
-        <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 14, 39, 0.98); border-top: 1px solid rgba(177, 156, 217, 0.15); padding: 10px 16px; text-align: center; font-size: 0.70rem; color: rgba(255, 255, 255, 0.45); line-height: 1.3; z-index: 100; max-height: 120px; overflow-y: auto;">
-          ⚕️ <strong>Important Disclaimer:</strong> VERA is not a medical device, medical service, or therapy. VERA does not diagnose, treat, cure, or prevent any medical condition. VERA complements but does not replace professional medical advice, therapy, or treatment. Always consult with a qualified healthcare provider for medical concerns.
+<!-- Welcome Screen with CTA -->
+<div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-orb-small">
+        <div class="welcome-orb-core"></div>
+    </div>
+    <div class="welcome-content">
+        <h2 class="welcome-title">I am VERA</h2>
+        <p class="welcome-message">
+            Your AI Companion.<br>
+            I am so glad you are finally here.
+        </p>
+        
+        <p class="free-trial-text">✨ 48-Hour Free Trial, then $12/month</p>
+        
+        <div class="auth-buttons-container">
+            <button class="auth-button email-trial" onclick="startTrialWithEmail()">Start Free Trial</button>
+            <a href="/login-password.html" class="auth-button signin">Sign In</a>
         </div>
+    </div>
+</div>
+
+<main>
+    <div class="hero">
+        <div class="orb-container" onclick="showWelcomeScreen();" role="button" tabindex="0" onkeypress="if(event.key==='Enter') showWelcomeScreen();">
+            <div class="orbital-path">
+                <div class="orbital-dot"></div>
+            </div>
+            <div class="orbital-path" style="animation-duration: 15s; animation-direction: reverse;">
+                <div class="orbital-dot" style="animation-delay: 1s;"></div>
+            </div>
+            <div class="hero-presence">
+                <div class="energy-ring"></div>
+                <div class="energy-ring" style="animation-duration: 6s; animation-direction: reverse;"></div>
+                <div class="presence-core">
+                    <div class="neural-pulse"></div>
+                    <div class="neural-pulse" style="animation-delay: 1s;"></div>
+                    <div class="neural-pulse" style="animation-delay: 2s;"></div>
+                    <div class="neural-pulse" style="animation-delay: 0.5s;"></div>
+                    <div class="neural-pulse" style="animation-delay: 1.5s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-tagline">YOUR NERVOUS SYSTEM IS SPEAKING</div>
+            <h1 class="hero-title">Intelligence Built for Your Body</h1>
+            <p class="hero-subtitle">Let me show you the way to regulation.</p>
+            <div class="enter-hint">Touch the orb to begin</div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Show welcome screen when user clicks the large orb
+    function showWelcomeScreen() {
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        document.querySelector('main').style.opacity = '0';
+        setTimeout(() => {
+            document.querySelector('main').style.display = 'none';
+            
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            welcomeScreen.classList.add('active');
+        }, 1000);
+    }
+
+    // Start trial with email - redirect to signup email page
+    function startTrialWithEmail() {
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        window.location.href = '/signup-email.html';
+    }
+
+    // Create energy particles around the orb
+    function createEnergyParticles() {
+        const orbContainer = document.querySelector('.orb-container');
+        if (!orbContainer) return;
+
+        const particleCount = 12;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'energy-particle';
+            
+            const angle = (i / particleCount) * Math.PI * 2;
+            const distance = 60;
+            
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            particle.style.setProperty('--tx', `${tx}px`);
+            particle.style.setProperty('--ty', `${ty}px`);
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.animationDelay = `${i * 0.3}s`;
+            
+            orbContainer.appendChild(particle);
+        }
+    }
+
+    // Create living universe with neurons
+    function createLivingUniverse() {
+        const universe = document.getElementById('livingUniverse');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!universe) return;
+
+        const waveCount = prefersReduced ? 1 : 3;
+        const neuronCount = prefersReduced ? 6 : 20;
+
+        for (let i = 0; i < waveCount; i++) {
+            const wave = document.createElement('div');
+            wave.className = 'consciousness-wave';
+            wave.style.left = Math.random() * 100 + '%';
+            wave.style.top = Math.random() * 100 + '%';
+            if (!prefersReduced) wave.style.animationDelay = i * 15 + 's';
+            universe.appendChild(wave);
+        }
+
+        for (let i = 0; i < neuronCount; i++) {
+            const neuron = document.createElement('div');
+            neuron.className = 'living-neuron';
+            neuron.style.left = Math.random() * 100 + '%';
+            neuron.style.top = Math.random() * 100 + '%';
+            if (!prefersReduced) neuron.style.animationDelay = (Math.random() * 30) + 's';
+            neuron.style.background = 'radial-gradient(circle, ' + (i % 2 === 0 ? 'var(--vera-lavender)' : 'var(--vera-neural-blue)') + ', transparent)';
+            universe.appendChild(neuron);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createLivingUniverse();
+        createEnergyParticles();
+        
+        const mainContent = document.querySelector('main');
+        if (mainContent) {
+            mainContent.style.opacity = '0';
+            mainContent.style.transition = 'opacity 1.5s ease-in-out';
+        }
+        
+        // PHASE 1: Show intro for 5 seconds
+        setTimeout(() => {
+            const intro = document.getElementById('veraIntro');
+            intro.classList.add('hidden');
+        }, 8000);
+        
+        // PHASE 2: Start dark transition at 6s
+        setTimeout(() => {
+            const darkTransition = document.getElementById('darkTransition');
+            darkTransition.classList.add('active');
+            
+            setTimeout(() => {
+                document.getElementById('word1').classList.add('show');
+            }, 1000);
+            
+            setTimeout(() => {
+                document.getElementById('word2').classList.add('show');
+            }, 4000);
+            
+            setTimeout(() => {
+                document.getElementById('word3').classList.add('show');
+            }, 7000);
+            
+        }, 9000);
+        
+        // PHASE 3: Show large interactive orb at 15s
+        setTimeout(() => {
+            const darkTransition = document.getElementById('darkTransition');
+            darkTransition.classList.remove('active');
+            
+            setTimeout(() => {
+                if (mainContent) {
+                    mainContent.style.display = 'block';
+                    setTimeout(() => {
+                        mainContent.style.opacity = '1';
+                    }, 50);
+                }
+            }, 1000);
+            
+        }, 15000);
+    });
+</script>
 </body>
 </html>
