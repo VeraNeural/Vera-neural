@@ -202,22 +202,6 @@ module.exports = async (req, res) => {
       });
     }
 
-    // CRITICAL: Check if trial has expired (blocks localStorage bypass)
-    if (user.trial_end) {
-      const trialEnd = new Date(user.trial_end);
-      const now = new Date();
-      
-      if (trialEnd < now) {
-        console.log(`❌ TRIAL EXPIRED for ${user.email} - trial ended at ${trialEnd.toISOString()}`);
-        return res.status(401).json({
-          valid: false,
-          error: 'Trial expired',
-          expired: true,
-          trial_end: user.trial_end
-        });
-      }
-    }
-
     // CREATE: Generate new session token after successful authentication
     if (action === 'create') {
       const sessionToken = await createSession(email);
@@ -235,7 +219,7 @@ module.exports = async (req, res) => {
 
     // VALIDATE: Check if session is still valid + check subscription/trial
     if (action === 'validate' || !action) {
-      // Token validation
+      // Token validation FIRST (before trial check)
       if (!tokenValue) {
         return res.status(400).json({ 
           valid: false,
@@ -252,7 +236,23 @@ module.exports = async (req, res) => {
         });
       }
 
-      // Session is valid and user info is loaded from DB join
+      // ✅ NOW check trial status AFTER confirming valid session
+      // This ensures we have a valid session before checking trial
+      const trialResult = checkTrialStatus(session);
+      console.log(`[validate-session] Trial Result for ${session.email}:`, trialResult);
+      
+      // CRITICAL: Check if trial has expired AFTER validating session
+      if (!trialResult.trialActive && session.subscription_status !== 'active') {
+        console.log(`❌ TRIAL EXPIRED for ${session.email} - trial ended at ${trialResult.trialEnd}`);
+        return res.status(401).json({
+          valid: false,
+          error: 'Trial expired',
+          expired: true,
+          trial_end: trialResult.trialEnd
+        });
+      }
+
+      // Session is valid and trial is active (or has active subscription)
       // Check subscription status
       try {
         const stripeResult = await checkStripeSubscription(session);
@@ -279,11 +279,7 @@ module.exports = async (req, res) => {
         });
       }
 
-      // Check trial status
-      const trialResult = checkTrialStatus(session);
-      
-      console.log(`[validate-session] Trial Result for ${session.email}:`, trialResult);
-      
+      // Trial is active
       if (trialResult.trialActive) {
         // Trial still valid
         console.log(`[validate-session] ✅ Returning valid=true (trial active) for ${session.email}`);
