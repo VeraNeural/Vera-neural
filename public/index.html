@@ -984,50 +984,124 @@
             mainContent.style.transition = 'opacity 1.5s ease-in-out';
         }
         
-        // ==================== INTRO FLOW ====================
-        // Let intro play normally - no click interception
-        // Users see full consciousness transition sequence
+        // ==================== PHASE TRACKING ====================
+        let currentPhase = 1;
+        let phaseTimeouts = [];
         
-        // PHASE 1: Hide intro after 8 seconds
-        setTimeout(() => {
+        // Clear all pending timeouts
+        function clearPhaseTimeouts() {
+            phaseTimeouts.forEach(timeout => clearTimeout(timeout));
+            phaseTimeouts = [];
+        }
+        
+        // ==================== PHASE ADVANCEMENT ====================
+        function goToPhase(phase) {
+            clearPhaseTimeouts();
+            currentPhase = phase;
             const intro = document.getElementById('veraIntro');
-            intro.classList.add('hidden');
-        }, 8000);
-        
-        // PHASE 2: Start dark transition at 6s
-        setTimeout(() => {
             const darkTransition = document.getElementById('darkTransition');
-            darkTransition.classList.add('active');
             
-            setTimeout(() => {
+            if (phase === 1) {
+                // PHASE 1: VERA Intro
+                intro.classList.remove('hidden');
+                darkTransition.classList.remove('active');
+                mainContent.style.display = 'none';
+            } else if (phase === 2) {
+                // PHASE 2: Dark transition with words
+                intro.classList.add('hidden');
+                darkTransition.classList.add('active');
+                
                 document.getElementById('word1').classList.add('show');
-            }, 1000);
-            
-            setTimeout(() => {
+                document.getElementById('word2').classList.remove('show');
+                document.getElementById('word3').classList.remove('show');
+            } else if (phase === 3) {
+                // PHASE 3: Dark transition with more words
+                intro.classList.add('hidden');
+                darkTransition.classList.add('active');
+                
+                document.getElementById('word1').classList.add('show');
                 document.getElementById('word2').classList.add('show');
-            }, 4000);
-            
-            setTimeout(() => {
+                document.getElementById('word3').classList.remove('show');
+            } else if (phase === 4) {
+                // PHASE 4: Final dark transition word
+                intro.classList.add('hidden');
+                darkTransition.classList.add('active');
+                
+                document.getElementById('word1').classList.add('show');
+                document.getElementById('word2').classList.add('show');
                 document.getElementById('word3').classList.add('show');
-            }, 7000);
-            
-        }, 9000);
+            } else if (phase === 5) {
+                // PHASE 5: Welcome screen
+                darkTransition.classList.remove('active');
+                
+                setTimeout(() => {
+                    if (mainContent) {
+                        mainContent.style.display = 'block';
+                        setTimeout(() => {
+                            mainContent.style.opacity = '1';
+                        }, 50);
+                    }
+                }, 500);
+            }
+        }
         
-        // PHASE 3: Show large interactive orb at 15s
-        setTimeout(() => {
-            const darkTransition = document.getElementById('darkTransition');
-            darkTransition.classList.remove('active');
-            
-            setTimeout(() => {
-                if (mainContent) {
-                    mainContent.style.display = 'block';
-                    setTimeout(() => {
-                        mainContent.style.opacity = '1';
-                    }, 50);
-                }
-            }, 1000);
-            
-        }, 15000);
+        // ==================== CLICK/TOUCH LISTENER ====================
+        // Advance phases instantly on user interaction
+        let hasInteracted = false;
+        document.addEventListener('click', () => {
+            if (currentPhase < 5 && !hasInteracted) {
+                hasInteracted = true;
+                console.log('🎯 USER CLICKED - ADVANCING PHASES INSTANTLY');
+            } else if (currentPhase < 5) {
+                currentPhase++;
+                goToPhase(currentPhase);
+                console.log(`🎯 PHASE ${currentPhase} - INSTANT TRANSITION`);
+            }
+        });
+        
+        document.addEventListener('touchstart', () => {
+            if (currentPhase < 5 && !hasInteracted) {
+                hasInteracted = true;
+                console.log('🎯 USER TOUCHED - ADVANCING PHASES INSTANTLY');
+            } else if (currentPhase < 5) {
+                currentPhase++;
+                goToPhase(currentPhase);
+                console.log(`🎯 PHASE ${currentPhase} - INSTANT TRANSITION`);
+            }
+        });
+        
+        // ==================== AUTO-PROGRESS TIMELINE ====================
+        // PHASE 1: Show intro for 8 seconds
+        phaseTimeouts.push(setTimeout(() => {
+            if (currentPhase === 1) {
+                currentPhase = 2;
+                goToPhase(2);
+            }
+        }, 8000));
+        
+        // PHASE 2: Start dark transition at 9s
+        phaseTimeouts.push(setTimeout(() => {
+            if (currentPhase === 2) {
+                currentPhase = 3;
+                goToPhase(3);
+            }
+        }, 11000));
+        
+        // PHASE 3: Add second word at 13s
+        phaseTimeouts.push(setTimeout(() => {
+            if (currentPhase === 3) {
+                currentPhase = 4;
+                goToPhase(4);
+            }
+        }, 14000));
+        
+        // PHASE 4: Show welcome screen at 21s
+        phaseTimeouts.push(setTimeout(() => {
+            if (currentPhase === 4) {
+                currentPhase = 5;
+                goToPhase(5);
+            }
+        }, 21000));
     });
 </script>
 </body>
