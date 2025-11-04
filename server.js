@@ -43,7 +43,8 @@ const routes = [
   'auth-check',
   'journaling',
   'grounding',
-  'profile-update'
+  'profile-update',
+  'saved-messages'
 ];
 
 routes.forEach((name) => {
