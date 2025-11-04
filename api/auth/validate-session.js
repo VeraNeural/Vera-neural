@@ -127,13 +127,18 @@ function checkTrialStatus(user) {
 
   const trialEnd = new Date(user.trial_end);
   const now = new Date();
+  
+  console.log(`🕐 Trial Check for ${user.email}:`);
+  console.log(`   - Trial End: ${trialEnd.toISOString()}`);
+  console.log(`   - Current Time: ${now.toISOString()}`);
+  console.log(`   - Time Remaining: ${Math.floor((trialEnd - now) / 1000 / 60)} minutes`);
 
   if (now < trialEnd) {
-    console.log(`✅ Trial still active for ${user.email}, expires: ${trialEnd.toISOString()}`);
+    console.log(`✅ Trial still ACTIVE for ${user.email}, expires: ${trialEnd.toISOString()}`);
     return { trialActive: true, trialEnd: user.trial_end };
   }
 
-  console.log(`ℹ️  Trial expired for ${user.email}`);
+  console.log(`❌ Trial EXPIRED for ${user.email}, expired at: ${trialEnd.toISOString()}`);
   return { trialActive: false, trialEnd: user.trial_end };
 }
 
@@ -261,8 +266,11 @@ module.exports = async (req, res) => {
       // Check trial status
       const trialResult = checkTrialStatus(session);
       
+      console.log(`[validate-session] Trial Result for ${session.email}:`, trialResult);
+      
       if (trialResult.trialActive) {
         // Trial still valid
+        console.log(`[validate-session] ✅ Returning valid=true (trial active) for ${session.email}`);
         return res.status(200).json({
           valid: true,
           trial: true,
@@ -278,6 +286,7 @@ module.exports = async (req, res) => {
       }
 
       // No active subscription or trial
+      console.log(`[validate-session] ❌ Returning valid=false (trial expired or no subscription) for ${session.email}`);
       return res.status(401).json({
         valid: false,
         error: 'No active subscription or trial',
