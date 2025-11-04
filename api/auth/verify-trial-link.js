@@ -96,19 +96,29 @@ module.exports = async (req, res) => {
       try {
         const customer = await stripe.customers.retrieve(user.stripe_customer_id);
         
-        // Get active subscriptions
+        // Get subscriptions (any status - we'll handle failed payments gracefully)
         const subscriptions = await stripe.subscriptions.list({
           customer: user.stripe_customer_id,
-          status: 'active',
-          limit: 1
+          limit: 10
         });
 
         if (subscriptions.data.length > 0) {
-          subscription_status = 'active'; // Paying customer
-          stripe_customer_id = user.stripe_customer_id;
-          console.log(`💳 User has active Stripe subscription: ${tokenData.email}`);
+          const latestSub = subscriptions.data[0];
+          
+          if (latestSub.status === 'active') {
+            subscription_status = 'active'; // Paying customer
+            stripe_customer_id = user.stripe_customer_id;
+            console.log(`💳 User has active Stripe subscription: ${tokenData.email}`);
+          } else if (latestSub.status === 'incomplete' || latestSub.status === 'past_due') {
+            // Payment failed - deny access, require payment
+            subscription_status = 'payment_failed';
+            stripe_customer_id = user.stripe_customer_id;
+            console.log(`❌ User has payment issue (${latestSub.status}) - access denied: ${tokenData.email}`);
+          } else {
+            console.log(`⏱️ No active Stripe subscription for: ${tokenData.email} (status: ${latestSub.status})`);
+          }
         } else {
-          console.log(`⏱️ No active Stripe subscription for: ${tokenData.email}`);
+          console.log(`⏱️ No Stripe subscriptions found for: ${tokenData.email}`);
         }
       } catch (stripeError) {
         console.error('⚠️ Error checking Stripe:', stripeError.message);
@@ -116,14 +126,27 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Create trial session (48 hours)
+    // Create trial session (48 hours) - ONLY for new trial users, not for payment_failed
     const trialStart = new Date();
     const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000);
 
     console.log(`🎉 Access granted for ${tokenData.email}: subscription_status=${subscription_status}`);
 
     // Redirect to vera-pro with trial parameters and subscription status
-    const redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&trial=${subscription_status === 'trial'}&trialStart=${trialStart.getTime()}&trialEnd=${trialEnd.getTime()}&subscription_status=${subscription_status}`;
+    // Only grant 48-hour trial if subscription_status is 'trial' (new user)
+    // If payment_failed or other status, don't extend trial
+    let redirectUrl;
+    if (subscription_status === 'trial') {
+      // New trial user - give them 48 hours
+      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&trial=true&trialStart=${trialStart.getTime()}&trialEnd=${trialEnd.getTime()}&subscription_status=trial`;
+    } else if (subscription_status === 'active') {
+      // Paid customer - give them full access
+      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&trial=false&subscription_status=active`;
+    } else {
+      // Payment failed or other issues - redirect to checkout
+      redirectUrl = `/checkout?email=${encodeURIComponent(tokenData.email)}&expired=true&reason=payment_required`;
+    }
+    
     console.log(`🔄 Redirecting to: ${redirectUrl}`);
     
     return res.redirect(302, redirectUrl);
