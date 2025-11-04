@@ -979,6 +979,7 @@
         
         const mainContent = document.querySelector('main');
         if (mainContent) {
+            mainContent.style.display = 'none'; // Hide main until phase 3
             mainContent.style.opacity = '0';
             mainContent.style.transition = 'opacity 1.5s ease-in-out';
         }
@@ -987,7 +988,7 @@
         // Let intro play normally - no click interception
         // Users see full consciousness transition sequence
         
-        // PHASE 1: Show intro for 5 seconds
+        // PHASE 1: Hide intro after 8 seconds
         setTimeout(() => {
             const intro = document.getElementById('veraIntro');
             intro.classList.add('hidden');
