@@ -4653,14 +4653,46 @@
         try {
           const trialEnd = new Date(trialEndIso);
           const now = new Date();
-          const hoursLeft = Math.max(0, Math.floor((trialEnd - now) / (1000 * 60 * 60)));
+          const diffMs = trialEnd - now;
           
-          const badge = document.querySelector('.trial-badge') || 
-                       document.querySelector('[data-trial-badge]');
+          // Store trial end time for the timer to use
+          trialEndTime = trialEnd;
           
-          if (badge) {
-            badge.textContent = `Trial: ${hoursLeft}h left`;
-            badge.style.opacity = hoursLeft < 12 ? '1' : '0.7';
+          // Update badge immediately
+          const hours = Math.floor(diffMs / (1000 * 60 * 60));
+          const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+          const timerText = `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+          
+          const badge = document.getElementById('trialBadge');
+          const badgeText = document.getElementById('trialBadgeText');
+          
+          if (badge && badgeText) {
+            // Show the badge
+            badge.style.display = 'flex';
+            badgeText.textContent = timerText;
+            
+            console.log(`✅ Trial badge updated: ${timerText} remaining`);
+            
+            // Change badge color based on time remaining
+            if (hours <= 1) {
+              badge.style.borderColor = 'rgba(231, 76, 60, 0.6)';
+              badge.style.background = 'linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(192, 57, 43, 0.15) 100%)';
+              badge.style.color = '#e74c3c';
+            } else if (hours <= 6) {
+              badge.style.borderColor = 'rgba(230, 126, 34, 0.6)';
+              badge.style.background = 'linear-gradient(135deg, rgba(230, 126, 34, 0.15) 0%, rgba(192, 108, 25, 0.15) 100%)';
+              badge.style.color = '#e67e22';
+            } else if (hours <= 24) {
+              badge.style.borderColor = 'rgba(241, 196, 15, 0.6)';
+              badge.style.background = 'linear-gradient(135deg, rgba(241, 196, 15, 0.15) 0%, rgba(183, 149, 11, 0.15) 100%)';
+              badge.style.color = '#f39c12';
+            }
+            
+            // Start/restart the timer if not already running
+            if (!trialTimerInterval) {
+              trialTimerInterval = setInterval(updateTrialTimer, 60000); // Update every minute
+              console.log('✅ Trial timer started');
+            }
           }
         } catch (err) {
           console.warn('Could not update trial badge:', err);
