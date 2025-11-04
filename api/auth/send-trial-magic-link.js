@@ -3,6 +3,7 @@
 
 const crypto = require('crypto');
 const { createMagicLink } = require('../../lib/database');
+const { checkEmailRateLimit, checkIpRateLimit } = require('../../lib/rate-limit');
 
 async function sendEmail(email, magicLink) {
   try {
@@ -103,6 +104,29 @@ module.exports = async (req, res) => {
     // Validate email
     if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       return res.status(400).json({ error: 'Invalid email address' });
+    }
+
+    // Get client IP for rate limiting
+    const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'unknown';
+
+    // Check IP rate limit (10 requests per minute)
+    const ipLimit = await checkIpRateLimit(ip);
+    if (!ipLimit.allowed) {
+      console.warn(`❌ IP rate limit exceeded: ${ip}`);
+      return res.status(429).json({
+        error: 'Too many requests from your IP. Please try again later.',
+        retryAfter: ipLimit.resetIn,
+      });
+    }
+
+    // Check email rate limit (3 emails per hour)
+    const emailLimit = await checkEmailRateLimit(email);
+    if (!emailLimit.allowed) {
+      console.warn(`❌ Email rate limit exceeded: ${email}`);
+      return res.status(429).json({
+        error: 'Too many magic links sent to this email. Check your inbox or try again in an hour.',
+        retryAfter: emailLimit.resetIn,
+      });
     }
 
     // Generate unique token

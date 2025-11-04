@@ -3240,6 +3240,18 @@
             document.getElementById('subscriptionEndDate').textContent = new Date(sub.subscription_end).toLocaleDateString();
             document.getElementById('subscriptionInfoField').style.display = 'flex';
             document.getElementById('trialInfoField').style.display = 'none';
+          } else if (localStorage.getItem('subscription_status') === 'payment_failed') {
+            document.getElementById('subscriptionStatus').textContent = '⚠️ Payment Failed';
+            document.getElementById('trialInfoField').style.display = 'none';
+            document.getElementById('subscriptionInfoField').style.display = 'none';
+            // Show retry button
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'margin-top: 1rem; padding: 1rem; background: rgba(230, 126, 34, 0.1); border-radius: 8px; border: 1px solid rgba(230, 126, 34, 0.3);';
+            infoDiv.innerHTML = `
+              <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem;">Your payment method failed. Please update your payment method to continue using VERA.</p>
+              <button onclick="openCheckout();" style="padding: 0.5rem 1rem; background: #e67e22; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600;">Retry Payment</button>
+            `;
+            document.getElementById('profileContent').appendChild(infoDiv);
           } else {
             document.getElementById('subscriptionStatus').textContent = '⭐ Trial Expired';
             document.getElementById('trialInfoField').style.display = 'none';
@@ -4871,6 +4883,7 @@
       const trial = params.get('trial');
       const trialStart = params.get('trialStart');
       const trialEnd = params.get('trialEnd');
+      const subscription_status = params.get('subscription_status');
 
       if (trial === 'true' && email) {
         console.log('✨ Trial activated via magic link for:', email);
@@ -4885,16 +4898,61 @@
         // Store trial data
         localStorage.setItem('trialStartedAt', trialStart || Date.now().toString());
         localStorage.setItem('trialEndsAt', trialEnd || (Date.now() + 48 * 60 * 60 * 1000).toString());
-        localStorage.setItem('subscription_status', 'trial');
+        localStorage.setItem('subscription_status', subscription_status || 'trial');
 
-        console.log('✅ Trial data stored. Countdown starting...');
-
-        // Show welcome toast
-        showSuccessToast(`🎉 Welcome! Your 48-hour trial has been activated, ${userName}!`);
+        // Handle different subscription statuses
+        if (subscription_status === 'payment_failed') {
+          console.log('⚠️ Payment failed but granting access with grace period');
+          showPaymentFailedNotice(`Payment failed for ${userName}. Using VERA with retry option available.`);
+        } else if (subscription_status === 'active') {
+          showSuccessToast(`🎉 Welcome! Your subscription is active, ${userName}!`);
+        } else {
+          showSuccessToast(`🎉 Welcome! Your 48-hour trial has been activated, ${userName}!`);
+        }
 
         // Clean up URL
         window.history.replaceState({}, document.title, window.location.pathname);
       }
+    }
+
+    function showPaymentFailedNotice(message) {
+      const toast = document.createElement('div');
+      toast.className = 'payment-failed-notice';
+      toast.innerHTML = `
+        <div style="display: flex; gap: 1rem; align-items: center; width: 100%; justify-content: space-between;">
+          <div style="display: flex; gap: 1rem; align-items: center; flex: 1;">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <div style="flex: 1;">
+              <strong>${message}</strong>
+              <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; opacity: 0.8;">Your payment method failed. Retry payment to continue after grace period.</p>
+            </div>
+          </div>
+          <button onclick="openCheckout();" style="padding: 0.5rem 1rem; background: #e67e22; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600;">Retry Payment</button>
+        </div>
+      `;
+      toast.style.cssText = `
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, rgba(230, 126, 34, 0.15) 0%, rgba(192, 108, 25, 0.15) 100%);
+        border: 1px solid rgba(230, 126, 34, 0.6);
+        border-radius: 12px;
+        padding: 1rem;
+        color: white;
+        z-index: 10001;
+        max-width: 500px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease;
+      `;
+      document.body.appendChild(toast);
+
+      // Keep visible for 10 seconds, but user can dismiss
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.style.animation = 'slideOut 0.3s ease-in';
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 10000);
     }
 
     // Handle return from Stripe payment
