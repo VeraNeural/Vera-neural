@@ -1,5 +1,6 @@
 const { generateToken, getExpirationTime, sendMagicLink } = require('../lib/auth');
 const { createUser, createMagicLink } = require('../lib/database');
+const { captureAuthError, setUserContext } = require('../lib/sentry-config');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -12,6 +13,9 @@ module.exports = async (req, res) => {
     if (!email || !email.includes('@')) {
       return res.status(400).json({ error: 'Valid email required' });
     }
+
+    // Set user context for Sentry
+    setUserContext(email);
 
     console.log('[auth] ========== MAGIC LINK REQUEST START ==========');
     console.log('[auth] Email:', email);
@@ -80,6 +84,15 @@ module.exports = async (req, res) => {
       stack: error.stack,
       fullError: JSON.stringify(error, null, 2)
     });
+
+    // Capture auth error with context
+    captureAuthError(error, {
+      email: req.body?.email,
+      action: 'send_magic_link',
+      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      userAgent: req.headers['user-agent'],
+    });
+
     console.error('[auth] Sent response: 500 Internal Server Error');
     res.status(500).json({ 
       error: 'Internal server error',
@@ -87,3 +100,4 @@ module.exports = async (req, res) => {
     });
   }
 };
+

@@ -2,8 +2,15 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 
+// Initialize Sentry early
+const { initSentry, sentryRequestMiddleware, sentryErrorMiddleware, captureApiError } = require('./lib/sentry-config');
+initSentry();
+
 const app = express();
 const DEFAULT_PORT = Number(process.env.PORT) || 3000;
+
+// Add Sentry request tracking middleware (must be early)
+app.use(sentryRequestMiddleware);
 
 // Stripe webhook must use the raw body to verify the signature
 app.post('/api/webhook', express.raw({ type: 'application/json' }), (req, res) => {
@@ -118,6 +125,22 @@ app.get('/checkout.html', (req, res) => {
 // Fallback to index.html for root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Add Sentry error tracking middleware (must be after route handlers)
+app.use(sentryErrorMiddleware);
+
+// Global error handler for unhandled exceptions
+app.use((err, req, res, next) => {
+  captureApiError(err, {
+    endpoint: req.path,
+    method: req.method,
+    statusCode: 500,
+    tags: { source: 'express_error_handler' }
+  });
+
+  console.error('❌ Unhandled error:', err);
+  return res.status(500).json({ error: 'Internal server error' });
 });
 
 // Resilient listen: if the chosen port is in use, try the next few ports automatically

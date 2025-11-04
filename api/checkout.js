@@ -1,5 +1,6 @@
 const { createCheckoutSession } = require('../lib/stripe');
 const { getUserByEmail, createUser } = require('../lib/database');
+const { capturePaymentError, setUserContext } = require('../lib/sentry-config');
 
 module.exports = async (req, res) => {
   // CORS
@@ -18,6 +19,9 @@ module.exports = async (req, res) => {
     if (!email || !plan) {
       return res.status(400).json({ error: 'Email and plan required' });
     }
+
+    // Set user context for Sentry
+    setUserContext(email);
 
     // Validate plan
     if (!['monthly', 'annual'].includes(plan)) {
@@ -49,7 +53,17 @@ module.exports = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Checkout error:', error);
+    console.error('❌ Checkout error:', error);
+    
+    // Capture payment error with context
+    capturePaymentError(error, {
+      email: req.body?.email,
+      plan: req.body?.plan,
+      service: 'stripe',
+      errorCode: error.code,
+    });
+
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
