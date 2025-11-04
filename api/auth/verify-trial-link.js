@@ -1,7 +1,8 @@
 // Vercel Serverless Function: Verify Magic Link & Activate Trial
 // GET /api/auth/verify-trial-link?token=xxx
 
-const { getMagicLink, markMagicLinkUsed, getUserByEmail, createUser } = require('../../lib/database');
+const crypto = require('crypto');
+const { getMagicLink, markMagicLinkUsed, getUserByEmail, createUser, createDatabaseSession } = require('../../lib/database');
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -131,6 +132,31 @@ module.exports = async (req, res) => {
     }
 
     console.log(`🎉 Access granted for ${tokenData.email}: subscription_status=${subscription_status}, trial_end=${user.trial_end}`);
+
+    // ============ SESSION CREATION ============
+    // Generate session token
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    const sessionExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    console.log('🔐 Creating session for user:', user.id);
+
+    // Store session in database
+    try {
+      await createDatabaseSession(user.id, sessionToken, sessionExpiresAt.toISOString());
+      console.log('✅ Session created successfully for user:', user.id);
+    } catch (sessionError) {
+      console.error('❌ Session creation failed:', sessionError.message);
+      throw sessionError;
+    }
+
+    // Set session cookies
+    res.setHeader('Set-Cookie', [
+      `session_token=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=604800; Path=/`,
+      `session_email=${tokenData.email}; Secure; SameSite=Strict; Max-Age=604800; Path=/`
+    ]);
+
+    console.log('🍪 Session cookies set for:', tokenData.email);
+    // ============ END SESSION CREATION ============
 
     // FIXED: Always redirect to vera-pro (trial info is in database, not URL)
     // vera-pro.html will validate session and check trial via validateSession() endpoint
