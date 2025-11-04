@@ -145,7 +145,61 @@ module.exports = async (req, res) => {
     
     console.log(`🔄 Redirecting to: ${redirectUrl}`);
     
-    return res.redirect(302, redirectUrl);
+    // Use HTML redirect instead of res.redirect() to avoid browser security blocks
+    return res.status(200).send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0;url=${redirectUrl}">
+  <title>Activating Trial...</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: white;
+    }
+    .loader {
+      text-align: center;
+    }
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    a {
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>✨ Activating your VERA trial...</p>
+    <p><small>If you're not redirected, <a href="${redirectUrl}">click here</a></small></p>
+  </div>
+  <script>
+    // Fallback JavaScript redirect after 500ms
+    setTimeout(() => {
+      window.location.href = '${redirectUrl}';
+    }, 500);
+  </script>
+</body>
+</html>
+    `);
 
   } catch (error) {
     console.error('❌ Error verifying trial link:', error);
