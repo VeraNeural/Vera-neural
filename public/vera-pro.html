@@ -3727,15 +3727,25 @@
       recognition.continuous = false;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
+      recognition.maxAlternatives = 1;  // Only get best match, not alternatives
       
       const voiceBtn = document.getElementById('voiceBtn');
       voiceBtn.classList.add('listening');
       
+      // Timeout after 10 seconds of no speech
+      let silenceTimeout = setTimeout(() => {
+        recognition.abort();
+        console.log('Speech recognition timeout - no audio detected');
+      }, 10000);
+      
       recognition.onstart = function() {
-        console.log('Listening...');
+        console.log('Listening for speech...');
+        voiceBtn.textContent = '🎤 Listening...';
       };
       
       recognition.onresult = function(event) {
+        clearTimeout(silenceTimeout);  // Reset timeout on speech detection
+        
         let interimTranscript = '';
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -3746,6 +3756,7 @@
             const input = document.getElementById('messageInput');
             input.value += transcript + ' ';
             input.focus();
+            voiceBtn.textContent = '🎤';  // Reset button
           } else {
             // Interim result
             interimTranscript += transcript;
@@ -3754,20 +3765,37 @@
       };
       
       recognition.onerror = function(event) {
+        clearTimeout(silenceTimeout);
         console.error('Speech recognition error:', event.error);
+        voiceBtn.classList.remove('listening');
+        voiceBtn.textContent = '🎤';
+        
+        // Only show errors for real problems, not for normal "no-speech" timeouts
+        let shouldShowError = true;
         let errorMsg = 'Speech recognition error. Please try again.';
         
         if (event.error === 'no-speech') {
-          errorMsg = 'No speech detected. Please speak clearly.';
+          // Silent timeout - don't show error message, just log it
+          console.log('No speech detected in time limit');
+          shouldShowError = false;
         } else if (event.error === 'network') {
-          errorMsg = 'Network error. Check your connection.';
+          errorMsg = 'Network error with speech service. Check your connection.';
+        } else if (event.error === 'audio-capture') {
+          errorMsg = 'No microphone detected. Please check your audio input.';
+        } else if (event.error === 'not-allowed') {
+          errorMsg = 'Microphone access denied. Please allow microphone access in browser settings.';
         }
         
-        addMessage('vera', errorMsg);
+        // Only add error message to chat for actual errors, not timeouts
+        if (shouldShowError) {
+          addMessage('vera', errorMsg);
+        }
       };
       
       recognition.onend = function() {
+        clearTimeout(silenceTimeout);
         voiceBtn.classList.remove('listening');
+        voiceBtn.textContent = '🎤';
       };
       
       recognition.start();
