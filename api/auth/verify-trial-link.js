@@ -1,7 +1,7 @@
 // Vercel Serverless Function: Verify Magic Link & Activate Trial
 // GET /api/auth/verify-trial-link?token=xxx
 
-const { getMagicLink, markMagicLinkUsed, getUserByEmail } = require('../../lib/database');
+const { getMagicLink, markMagicLinkUsed, getUserByEmail, createUser } = require('../../lib/database');
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -73,52 +73,56 @@ module.exports = async (req, res) => {
       ));
     }
 
-    // Token is valid! Mark as used
-    try {
-      await markMagicLinkUsed(token);
-      console.log(`✅ Token marked as used: ${token.substring(0, 8)}...`);
-    } catch (error) {
-      console.error('❌ Error marking token as used:', error);
-      return res.status(500).send(errorPage(
-        'Server Error',
-        'Something went wrong while processing your trial link. Please try again.',
-        '⚠️'
-      ));
+    // CRITICAL FIX: Create or update user in database with trial
+    // This ensures trial_end is persisted in database, not just URL params
+    const { createUser } = require('../../lib/database');
+    
+    let user = await getUserByEmail(tokenData.email);
+    
+    if (!user) {
+      // NEW USER: Create with 48-hour trial
+      console.log(`👤 Creating new user: ${tokenData.email}`);
+      user = await createUser(tokenData.email);
+      console.log(`✅ New user created with trial_end: ${user.trial_end}`);
+    } else {
+      // RETURNING USER: Check if trial expired
+      const now = new Date();
+      const trialEnd = new Date(user.trial_end);
+      
+      if (now > trialEnd) {
+        // Trial expired - grant another 48 hours
+        console.log(`⏱️ Trial expired for returning user, extending...`);
+        const { pool } = require('../../lib/database');
+        const newTrialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000);
+        const result = await pool.query(
+          `UPDATE users SET trial_end = $1, updated_at = NOW() WHERE email = $2 RETURNING *`,
+          [newTrialEnd.toISOString(), tokenData.email]
+        );
+        user = result.rows[0];
+        console.log(`✅ Trial extended for returning user until: ${user.trial_end}`);
+      } else {
+        // Trial still active - just extend for another 48 hours (don't require payment yet)
+        console.log(`✅ Trial still active for: ${tokenData.email}, expires: ${trialEnd.toISOString()}`);
+      }
     }
 
-    // Check user's subscription status
-    let user = await getUserByEmail(tokenData.email);
-    let subscription_status = 'trial'; // Default to trial for new users
+    // Check user's Stripe subscription status
+    let subscription_status = 'trial'; // Default to trial
     let stripe_customer_id = null;
 
     if (user && user.stripe_customer_id) {
       // Check Stripe for active subscription
       try {
-        const customer = await stripe.customers.retrieve(user.stripe_customer_id);
-        
-        // Get subscriptions (any status - we'll handle failed payments gracefully)
         const subscriptions = await stripe.subscriptions.list({
           customer: user.stripe_customer_id,
-          limit: 10
+          status: 'active',
+          limit: 1
         });
 
         if (subscriptions.data.length > 0) {
-          const latestSub = subscriptions.data[0];
-          
-          if (latestSub.status === 'active') {
-            subscription_status = 'active'; // Paying customer
-            stripe_customer_id = user.stripe_customer_id;
-            console.log(`💳 User has active Stripe subscription: ${tokenData.email}`);
-          } else if (latestSub.status === 'incomplete' || latestSub.status === 'past_due') {
-            // Payment failed - deny access, require payment
-            subscription_status = 'payment_failed';
-            stripe_customer_id = user.stripe_customer_id;
-            console.log(`❌ User has payment issue (${latestSub.status}) - access denied: ${tokenData.email}`);
-          } else {
-            console.log(`⏱️ No active Stripe subscription for: ${tokenData.email} (status: ${latestSub.status})`);
-          }
-        } else {
-          console.log(`⏱️ No Stripe subscriptions found for: ${tokenData.email}`);
+          subscription_status = 'active'; // Paying customer
+          stripe_customer_id = user.stripe_customer_id;
+          console.log(`💳 User has active Stripe subscription: ${tokenData.email}`);
         }
       } catch (stripeError) {
         console.error('⚠️ Error checking Stripe:', stripeError.message);
@@ -126,25 +130,17 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Create trial session (48 hours) - ONLY for new trial users, not for payment_failed
-    const trialStart = new Date();
-    const trialEnd = new Date(trialStart.getTime() + 48 * 60 * 60 * 1000);
+    console.log(`🎉 Access granted for ${tokenData.email}: subscription_status=${subscription_status}, trial_end=${user.trial_end}`);
 
-    console.log(`🎉 Access granted for ${tokenData.email}: subscription_status=${subscription_status}`);
-
-    // Redirect to vera-pro with trial parameters and subscription status
-    // Only grant 48-hour trial if subscription_status is 'trial' (new user)
-    // If payment_failed or other status, don't extend trial
+    // FIXED: Always redirect to vera-pro (trial info is in database, not URL)
+    // vera-pro.html will validate session and check trial via validateSession() endpoint
     let redirectUrl;
-    if (subscription_status === 'trial') {
-      // New trial user - give them 48 hours
-      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&trial=true&trialStart=${trialStart.getTime()}&trialEnd=${trialEnd.getTime()}&subscription_status=trial`;
-    } else if (subscription_status === 'active') {
+    if (subscription_status === 'active') {
       // Paid customer - give them full access
-      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&trial=false&subscription_status=active`;
+      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&subscription_status=active`;
     } else {
-      // Payment failed or other issues - redirect to checkout
-      redirectUrl = `/checkout?email=${encodeURIComponent(tokenData.email)}&expired=true&reason=payment_required`;
+      // Trial user (new or returning) - redirect to vera-pro, trial is in database
+      redirectUrl = `/vera-pro.html?email=${encodeURIComponent(tokenData.email)}&subscription_status=trial`;
     }
     
     console.log(`🔄 Redirecting to: ${redirectUrl}`);
