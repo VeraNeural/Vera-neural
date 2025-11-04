@@ -110,23 +110,31 @@ module.exports = async (req, res) => {
     const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'unknown';
 
     // Check IP rate limit (10 requests per minute)
-    const ipLimit = await checkIpRateLimit(ip);
-    if (!ipLimit.allowed) {
-      console.warn(`❌ IP rate limit exceeded: ${ip}`);
-      return res.status(429).json({
-        error: 'Too many requests from your IP. Please try again later.',
-        retryAfter: ipLimit.resetIn,
-      });
+    try {
+      const ipLimit = await checkIpRateLimit(ip);
+      if (!ipLimit.allowed) {
+        console.warn(`❌ IP rate limit exceeded: ${ip}`);
+        return res.status(429).json({
+          error: 'Too many requests from your IP. Please try again later.',
+          retryAfter: ipLimit.resetIn,
+        });
+      }
+    } catch (rateLimitError) {
+      console.warn(`⚠️ IP rate limit check failed (allowing request): ${rateLimitError.message}`);
     }
 
     // Check email rate limit (3 emails per hour)
-    const emailLimit = await checkEmailRateLimit(email);
-    if (!emailLimit.allowed) {
-      console.warn(`❌ Email rate limit exceeded: ${email}`);
-      return res.status(429).json({
-        error: 'Too many magic links sent to this email. Check your inbox or try again in an hour.',
-        retryAfter: emailLimit.resetIn,
-      });
+    try {
+      const emailLimit = await checkEmailRateLimit(email);
+      if (!emailLimit.allowed) {
+        console.warn(`❌ Email rate limit exceeded: ${email}`);
+        return res.status(429).json({
+          error: 'Too many magic links sent to this email. Check your inbox or try again in an hour.',
+          retryAfter: emailLimit.resetIn,
+        });
+      }
+    } catch (rateLimitError) {
+      console.warn(`⚠️ Email rate limit check failed (allowing request): ${rateLimitError.message}`);
     }
 
     // Generate unique token
