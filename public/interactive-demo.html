@@ -443,7 +443,7 @@
     <!-- STATUS BAR -->
     <div class="status-bar">
         <div class="phase-indicator">Phase: <span id="currentPhase">1 - VERA ORB</span></div>
-        <div class="instruction">Click anywhere to advance → Or use buttons</div>
+        <div class="instruction">Click anywhere to advance</div>
     </div>
 
     <!-- CONTROLS -->
@@ -591,17 +591,6 @@
             nextPhase();
         });
 
-        // ==================== KEYBOARD CONTROL ====================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                e.preventDefault();
-                nextPhase();
-            } else if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                previousPhase();
-            }
-        });
-
         // ==================== INITIALIZATION ====================
         console.log('');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -615,7 +604,6 @@
         console.log('');
         console.log('Controls:');
         console.log('  • Click anywhere to advance');
-        console.log('  • Arrow keys to navigate');
         console.log('  • Buttons to jump to specific phases');
         console.log('');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
