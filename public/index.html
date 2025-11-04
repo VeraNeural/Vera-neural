@@ -983,49 +983,9 @@
             mainContent.style.transition = 'opacity 1.5s ease-in-out';
         }
         
-        // ==================== INVISIBLE AFFORDANCE: CLICK ANYWHERE TO SKIP ====================
-        // Hick's Law + Paradox of Choice: Single universal affordance for immediate agency
-        // No visual cues - just click anywhere during intro to jump straight to email signup
-        let hasSkipped = false;
-        
-        const skipToEmail = () => {
-            if (hasSkipped) return; // Only trigger once
-            hasSkipped = true;
-            
-            console.log('🎯 USER CLICKED - SKIPPING INTRO (Hick\'s Law activation)');
-            console.log('📊 Cognitive load reduced immediately via agency');
-            
-            // Stop all timeouts
-            document.body.classList.add('skip-active');
-            
-            // Fade out everything
-            const intro = document.getElementById('veraIntro');
-            const darkTransition = document.getElementById('darkTransition');
-            if (intro) intro.style.opacity = '0';
-            if (darkTransition) darkTransition.style.opacity = '0';
-            if (mainContent) mainContent.style.opacity = '0';
-            
-            // Redirect to email signup after fade
-            setTimeout(() => {
-                window.location.href = '/signup-email.html';
-            }, 300);
-        };
-        
-        // Add click listener to entire document during intro (first 15 seconds)
-        document.addEventListener('click', (e) => {
-            // Only trigger during intro phase (before 15 seconds)
-            if (!hasSkipped && e.target !== document.querySelector('a')) {
-                skipToEmail();
-            }
-        }, { once: false });
-        
-        // Also allow keyboard press to skip (accessibility)
-        document.addEventListener('keydown', (e) => {
-            if (!hasSkipped && (e.code === 'Space' || e.code === 'Enter')) {
-                e.preventDefault();
-                skipToEmail();
-            }
-        }, { once: false });
+        // ==================== INTRO FLOW ====================
+        // Let intro play normally - no click interception
+        // Users see full consciousness transition sequence
         
         // PHASE 1: Show intro for 5 seconds
         setTimeout(() => {
