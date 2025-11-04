@@ -964,6 +964,43 @@
       border: 1px solid rgba(155, 89, 182, 0.3);
     }
 
+    .message-actions {
+      display: none;
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+      align-items: center;
+    }
+
+    .message:hover .message-actions {
+      display: flex;
+    }
+
+    .message-action-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      background: rgba(123, 158, 240, 0.2);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .message-action-btn:hover {
+      background: rgba(123, 158, 240, 0.4);
+      color: var(--accent);
+    }
+
+    .message-action-btn.saved {
+      background: rgba(155, 89, 182, 0.3);
+      color: var(--orb-2);
+    }
+
     .typing-indicator {
       display: none;
       align-items: center;
@@ -2959,6 +2996,15 @@
           </div>
         </div>
       </div>
+
+      <div class="thread-category">
+        <div class="category-label">Saved Messages</div>
+        <div id="savedMessagesContainer">
+          <div class="thread-item" style="padding: 0.75rem; text-align: center; color: var(--text-tertiary); font-size: 0.85rem;">
+            No saved messages yet
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="sidebar-footer">
@@ -3386,6 +3432,9 @@
       const initial = userName.charAt(0).toUpperCase();
       document.getElementById('userAvatarInitial').textContent = initial;
       document.getElementById('userNameDisplay').textContent = userName;
+      
+      // Initialize saved messages display
+      updateSavedMessagesDisplay();
     });
 
     function shareThread() {
@@ -3889,10 +3938,26 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message message-${role}`;
       
+      // Generate unique message ID
+      const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      messageDiv.dataset.messageId = messageId;
+      
+      // Check if this message is already saved
+      const savedMessages = JSON.parse(localStorage.getItem('veraUnicasSavedMessages') || '[]');
+      const isSaved = savedMessages.some(m => m.id === messageId);
+      
       if (role === 'vera') {
         messageDiv.innerHTML = `
           <div class="message-avatar"></div>
           <div class="message-bubble">${content}</div>
+          <div class="message-actions">
+            <button class="message-action-btn ${isSaved ? 'saved' : ''}" title="${isSaved ? 'Unsave message' : 'Save message'}" onclick="toggleSaveMessage('${messageId}', this)">
+              ${isSaved ? '♥' : '♡'}
+            </button>
+            <button class="message-action-btn" title="Delete message" onclick="deleteMessageFromChat('${messageId}')">
+              ×
+            </button>
+          </div>
         `;
         
         // Trigger TTS for VERA message
@@ -3900,11 +3965,98 @@
           speakMessage(content);
         }, 100);
       } else {
-        messageDiv.innerHTML = `<div class="message-bubble">${content}</div>`;
+        messageDiv.innerHTML = `
+          <div class="message-bubble">${content}</div>
+          <div class="message-actions">
+            <button class="message-action-btn" title="Delete message" onclick="deleteMessageFromChat('${messageId}')">
+              ×
+            </button>
+          </div>
+        `;
       }
       
       container.appendChild(messageDiv);
       document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+    }
+
+    function toggleSaveMessage(messageId, button) {
+      const savedMessages = JSON.parse(localStorage.getItem('veraUnicasSavedMessages') || '[]');
+      const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+      const messageContent = messageElement.querySelector('.message-bubble').textContent;
+      
+      const existingIndex = savedMessages.findIndex(m => m.id === messageId);
+      
+      if (existingIndex >= 0) {
+        // Remove from saved
+        savedMessages.splice(existingIndex, 1);
+        button.textContent = '♡';
+        button.classList.remove('saved');
+      } else {
+        // Add to saved
+        savedMessages.push({
+          id: messageId,
+          content: messageContent,
+          timestamp: new Date().toISOString(),
+          role: messageElement.classList.contains('message-vera') ? 'vera' : 'user'
+        });
+        button.textContent = '♥';
+        button.classList.add('saved');
+      }
+      
+      localStorage.setItem('veraUnicasSavedMessages', JSON.stringify(savedMessages));
+      updateSavedMessagesDisplay();
+    }
+
+    function deleteMessageFromChat(messageId) {
+      const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+      if (messageElement) {
+        messageElement.remove();
+      }
+      
+      // Also remove from saved if it was saved
+      const savedMessages = JSON.parse(localStorage.getItem('veraUnicasSavedMessages') || '[]');
+      const index = savedMessages.findIndex(m => m.id === messageId);
+      if (index >= 0) {
+        savedMessages.splice(index, 1);
+        localStorage.setItem('veraUnicasSavedMessages', JSON.stringify(savedMessages));
+        updateSavedMessagesDisplay();
+      }
+    }
+
+    function updateSavedMessagesDisplay() {
+      const container = document.getElementById('savedMessagesContainer');
+      const savedMessages = JSON.parse(localStorage.getItem('veraUnicasSavedMessages') || '[]');
+      
+      if (savedMessages.length === 0) {
+        container.innerHTML = `
+          <div class="thread-item" style="padding: 0.75rem; text-align: center; color: var(--text-tertiary); font-size: 0.85rem;">
+            No saved messages yet
+          </div>
+        `;
+      } else {
+        container.innerHTML = savedMessages.map((msg, idx) => {
+          const preview = msg.content.substring(0, 30) + (msg.content.length > 30 ? '...' : '');
+          return `
+            <div class="thread-item" onclick="viewSavedMessage(${idx})">
+              <div class="thread-content">
+                <div class="thread-title">${msg.role === 'vera' ? 'VERA' : 'You'}</div>
+                <div class="thread-preview">${preview}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function viewSavedMessage(idx) {
+      const savedMessages = JSON.parse(localStorage.getItem('veraUnicasSavedMessages') || '[]');
+      if (savedMessages[idx]) {
+        const msg = savedMessages[idx];
+        clearMessages();
+        document.getElementById('welcomeState').style.display = 'none';
+        document.getElementById('messagesContainer').classList.add('active');
+        addMessage(msg.role, msg.content);
+      }
     }
 
     function clearMessages() {
