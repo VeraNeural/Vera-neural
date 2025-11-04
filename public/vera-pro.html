@@ -3435,6 +3435,14 @@
       
       // Initialize saved messages display
       updateSavedMessagesDisplay();
+      
+      // Check trial status on page load
+      checkAndShowTrialNotification();
+      
+      // Check trial status every 30 seconds
+      setInterval(() => {
+        checkAndShowTrialNotification();
+      }, 30000);
     });
 
     function shareThread() {
