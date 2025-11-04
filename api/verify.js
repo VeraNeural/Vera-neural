@@ -150,18 +150,14 @@ module.exports = async (req, res) => {
         if (now > trialEnd) {
           const newTrialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000);
           const result = await pool.query(
-            `UPDATE users SET trial_end = $1, updated_at = NOW() WHERE email = $2 RETURNING *`,
+            `UPDATE users SET trial_end = $1 WHERE email = $2 RETURNING *`,
             [newTrialEnd.toISOString(), magicLink.email]
           );
           user = result.rows[0];
           console.log('[verify POST] Trial extended for returning user');
         } else {
-          // Just update last_login
-          const result = await pool.query(
-            `UPDATE users SET updated_at = NOW() WHERE email = $1 RETURNING *`,
-            [magicLink.email]
-          );
-          user = result.rows[0];
+          // User already exists, no need to update anything
+          console.log('[verify POST] User login recorded');
         }
       }
 

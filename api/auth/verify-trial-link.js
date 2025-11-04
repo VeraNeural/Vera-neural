@@ -95,13 +95,13 @@ module.exports = async (req, res) => {
         const { pool } = require('../../lib/database');
         const newTrialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000);
         const result = await pool.query(
-          `UPDATE users SET trial_end = $1, updated_at = NOW() WHERE email = $2 RETURNING *`,
+          `UPDATE users SET trial_end = $1 WHERE email = $2 RETURNING *`,
           [newTrialEnd.toISOString(), tokenData.email]
         );
         user = result.rows[0];
         console.log(`✅ Trial extended for returning user until: ${user.trial_end}`);
       } else {
-        // Trial still active - just extend for another 48 hours (don't require payment yet)
+        // Trial still active
         console.log(`✅ Trial still active for: ${tokenData.email}, expires: ${trialEnd.toISOString()}`);
       }
     }
