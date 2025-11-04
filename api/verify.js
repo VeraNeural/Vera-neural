@@ -1,4 +1,5 @@
 const { getMagicLink, markMagicLinkUsed, getUserByEmail } = require('../lib/database');
+const { createSession } = require('./auth/validate-session');
 
 module.exports = async (req, res) => {
   // Support CORS preflight for safety
@@ -136,7 +137,16 @@ module.exports = async (req, res) => {
       await markMagicLinkUsed(token);
       const user = await getUserByEmail(magicLink.email);
       console.log('[verify POST] User lookup result:', user ? { id: user.id, email: user.email } : 'NEW_USER');
-      return res.status(200).json({ success: true, email: magicLink.email, userId: user ? user.id : null });
+      
+      // Create session token for authenticated user
+      const sessionToken = createSession(magicLink.email);
+      
+      return res.status(200).json({ 
+        success: true, 
+        email: magicLink.email, 
+        userId: user ? user.id : null,
+        sessionToken: sessionToken 
+      });
     }
 
     return res.status(405).json({ error: 'Method not allowed' });

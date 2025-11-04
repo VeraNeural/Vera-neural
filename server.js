@@ -82,6 +82,17 @@ app.all('/api/auth/send-trial-magic-link', async (req, res) => {
   }
 });
 
+// Session validation endpoint
+app.all('/api/auth/validate-session', async (req, res) => {
+  try {
+    const handler = require('./api/auth/validate-session.js');
+    return handler(req, res);
+  } catch (err) {
+    console.error('Error handling /api/auth/validate-session:', err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Conversations routes (list/get/delete)
 const conversations = require('./api/conversations');
 app.get('/api/conversations', conversations.list);
