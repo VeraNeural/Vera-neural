@@ -8,5 +8,11 @@
     { "source": "/checkout.html", "destination": "/checkout.html" },
     { "source": "/index.html", "destination": "/index.html" },
     { "source": "^/$", "destination": "/vera-pro.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-sessions",
+      "schedule": "0 2 * * *"
+    }
   ]
 }

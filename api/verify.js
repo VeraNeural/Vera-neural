@@ -1,4 +1,4 @@
-const { getMagicLink, markMagicLinkUsed, getUserByEmail } = require('../lib/database');
+const { getMagicLink, markMagicLinkUsed, getUserByEmail, createUser } = require('../lib/database');
 const { createSession } = require('./auth/validate-session');
 
 module.exports = async (req, res) => {
@@ -135,18 +135,59 @@ module.exports = async (req, res) => {
       });
       
       await markMagicLinkUsed(token);
-      const user = await getUserByEmail(magicLink.email);
-      console.log('[verify POST] User lookup result:', user ? { id: user.id, email: user.email } : 'NEW_USER');
       
-      // Create session token for authenticated user
-      const sessionToken = createSession(magicLink.email);
+      // Upsert user with trial end date
+      let user = await getUserByEmail(magicLink.email);
+      if (!user) {
+        user = await createUser(magicLink.email);
+      } else {
+        // Update last_login and reset trial if expired
+        const { pool } = require('../lib/database');
+        const trialEnd = new Date(user.trial_end);
+        const now = new Date();
+        
+        // If trial expired, reset it
+        if (now > trialEnd) {
+          const newTrialEnd = new Date(Date.now() + 48 * 60 * 60 * 1000);
+          const result = await pool.query(
+            `UPDATE users SET trial_end = $1, updated_at = NOW() WHERE email = $2 RETURNING *`,
+            [newTrialEnd.toISOString(), magicLink.email]
+          );
+          user = result.rows[0];
+          console.log('[verify POST] Trial extended for returning user');
+        } else {
+          // Just update last_login
+          const result = await pool.query(
+            `UPDATE users SET updated_at = NOW() WHERE email = $1 RETURNING *`,
+            [magicLink.email]
+          );
+          user = result.rows[0];
+        }
+      }
+
+      console.log('[verify POST] User lookup result:', user ? { id: user.id, email: user.email, trial_end: user.trial_end } : 'NEW_USER');
       
-      return res.status(200).json({ 
-        success: true, 
-        email: magicLink.email, 
-        userId: user ? user.id : null,
-        sessionToken: sessionToken 
-      });
+      // Create session token
+      const { createSession } = require('./auth/validate-session');
+      const sessionToken = await createSession(magicLink.email);
+      
+      // Set HTTP-only secure cookies instead of URL params
+      // Email cookie: regular secure cookie (can be read by frontend if needed)
+      res.setHeader('Set-Cookie', [
+        `session_token=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=604800; Path=/`,
+        `session_email=${encodeURIComponent(magicLink.email)}; Secure; SameSite=Strict; Max-Age=604800; Path=/`,
+        `trial_end=${encodeURIComponent(user.trial_end)}; Secure; SameSite=Strict; Max-Age=604800; Path=/`
+      ]);
+      
+      // Redirect to vera-pro.html (cookies will be sent automatically)
+      const appUrl = process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}` 
+        : process.env.APP_URL || 'http://localhost:3000';
+      
+      const redirectUrl = new URL('/vera-pro.html', appUrl).toString();
+      
+      console.log('[verify POST] Session created with HTTP-only cookies, redirecting to vera-pro.html');
+      return res.status(302).redirect(redirectUrl);
     }
 
     return res.status(405).json({ error: 'Method not allowed' });

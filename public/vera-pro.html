@@ -4548,6 +4548,131 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // ==================== SESSION VALIDATION ====================
+      
+      /**
+       * Session validation: Check if user is authenticated with valid session
+       * Reads session info from HTTP-only cookies (set by /api/verify)
+       * Validates session against server every 5 minutes
+       */
+      
+      async function validateSession() {
+        try {
+          // Get session email from cookie (fallback to localStorage)
+          const cookies = Object.fromEntries(
+            document.cookie.split('; ').map(c => c.split('=').map(decodeURIComponent))
+          );
+          
+          const userEmail = cookies.session_email || localStorage.getItem('userEmail');
+          const trialEnd = cookies.trial_end || localStorage.getItem('trialEnd');
+          
+          if (!userEmail) {
+            console.warn('⚠️ No session email found - redirecting to checkout');
+            window.location.href = '/checkout?reason=no_session';
+            return false;
+          }
+          
+          // Validate session with server (HTTP-only cookie sent automatically)
+          const response = await fetch('/api/auth/validate-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: userEmail
+              // Note: sessionToken is in HTTP-only cookie, not sent in body
+            }),
+            credentials: 'include' // Include cookies in request
+          });
+          
+          const data = await response.json();
+          
+          if (!data.valid) {
+            console.warn('❌ Session validation failed:', data.error);
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('trialEnd');
+            window.location.href = `/checkout?email=${userEmail}&reason=${encodeURIComponent(data.error || 'Session expired')}`;
+            return false;
+          }
+          
+          // Update localStorage with current session info
+          localStorage.setItem('userEmail', userEmail);
+          localStorage.setItem('trialEnd', data.trialEnd || trialEnd);
+          
+          // Update trial badge if trial is active
+          if (data.trial && data.trialEnd) {
+            updateTrialBadge(data.trialEnd);
+          }
+          
+          console.log(`✅ Session valid for ${userEmail}`, {
+            trial: data.trial,
+            subscription_status: data.subscription_status
+          });
+          
+          return true;
+        } catch (error) {
+          console.error('❌ Session validation error:', error);
+          // Don't redirect on network error - allow offline access
+          return true;
+        }
+      }
+      
+      /**
+       * Update trial badge with countdown
+       */
+      function updateTrialBadge(trialEndIso) {
+        try {
+          const trialEnd = new Date(trialEndIso);
+          const now = new Date();
+          const hoursLeft = Math.max(0, Math.floor((trialEnd - now) / (1000 * 60 * 60)));
+          
+          const badge = document.querySelector('.trial-badge') || 
+                       document.querySelector('[data-trial-badge]');
+          
+          if (badge) {
+            badge.textContent = `Trial: ${hoursLeft}h left`;
+            badge.style.opacity = hoursLeft < 12 ? '1' : '0.7';
+          }
+        } catch (err) {
+          console.warn('Could not update trial badge:', err);
+        }
+      }
+      
+      /**
+       * Logout: Revoke session
+       */
+      async function logout() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          
+          await fetch('/api/auth/validate-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: userEmail,
+              action: 'revoke'
+            }),
+            credentials: 'include'
+          });
+        } catch (err) {
+          console.warn('Logout API call failed:', err);
+        }
+        
+        // Clear localStorage and redirect
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('trialEnd');
+        window.location.href = '/';
+      }
+      
+      // Validate session on page load
+      validateSession();
+      
+      // Validate session every 5 minutes
+      setInterval(validateSession, 5 * 60 * 1000);
+      
+      // Make logout function globally available
+      window.logout = logout;
+      
+      // ==================== END SESSION VALIDATION ====================
+      
       document.getElementById('messageInput').focus();
     });
 

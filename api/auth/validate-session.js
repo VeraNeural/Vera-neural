@@ -1,18 +1,16 @@
 /**
  * API: /api/auth/validate-session
- * Validates user session by checking email + session token
- * Used by vera-pro.html to verify user is still authenticated
+ * Validates user session by checking email + session token + subscription status
+ * Verifies: session token validity, trial expiry, active Stripe subscription
  * 
- * Request: POST with {email, sessionToken}
- * Response: {valid: true/false, user: {...}}
+ * Request: POST with {email, token} or {email, action, sessionToken}
+ * Response: {valid: true/false, trial: bool, subscription_status: string}
  */
 
-const { getUserByEmail } = require('../../lib/database');
+const { getUserByEmail, createDatabaseSession, getSessionByToken, revokeSessionByToken } = require('../../lib/database');
+const { captureAuthError } = require('../../lib/sentry-config');
+const { checkRateLimit } = require('../../lib/rate-limit');
 const crypto = require('crypto');
-
-// In-memory session store (in production, use Redis or database)
-// Key: email, Value: {token, expiresAt, createdAt}
-const sessionStore = new Map();
 
 // Session validity: 7 days
 const SESSION_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
@@ -25,90 +23,186 @@ function generateSessionToken() {
 }
 
 /**
- * Create a session for a user
+ * Create a session for a user (save to database)
  */
-function createSession(email) {
-  const token = generateSessionToken();
-  const now = Date.now();
-  
-  sessionStore.set(email, {
-    token,
-    expiresAt: now + SESSION_EXPIRY_MS,
-    createdAt: now
-  });
+async function createSession(email) {
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      throw new Error(`User not found: ${email}`);
+    }
 
-  console.log(`✅ Session created for ${email}, expires in 7 days`);
-  return token;
+    const token = generateSessionToken();
+    const expiresAt = new Date(Date.now() + SESSION_EXPIRY_MS).toISOString();
+    
+    await createDatabaseSession(user.id, token, expiresAt);
+    console.log(`✅ Session created for ${email}, expires in 7 days`);
+    return token;
+  } catch (error) {
+    console.error(`❌ Error creating session for ${email}:`, error.message);
+    throw error;
+  }
 }
 
 /**
- * Validate a session token
+ * Validate a session token (check database)
  */
-function validateSessionToken(email, token) {
-  const session = sessionStore.get(email);
-  
-  if (!session) {
-    console.warn(`⚠️  No session found for ${email}`);
-    return false;
-  }
+async function validateSessionToken(token) {
+  try {
+    const session = await getSessionByToken(token);
+    
+    if (!session) {
+      console.warn(`⚠️  No session found for token: ${token.substring(0, 8)}...`);
+      return null;
+    }
 
-  if (session.token !== token) {
-    console.warn(`⚠️  Invalid token for ${email}`);
-    return false;
+    // Session is valid (expiry already checked in getSessionByToken WHERE clause)
+    console.log(`✅ Session valid for ${session.email}`);
+    return session;
+  } catch (error) {
+    console.error(`❌ Error validating session:`, error.message);
+    throw error;
   }
-
-  if (Date.now() > session.expiresAt) {
-    console.warn(`⚠️  Session expired for ${email}`);
-    sessionStore.delete(email);
-    return false;
-  }
-
-  console.log(`✅ Session valid for ${email}`);
-  return true;
 }
 
 /**
  * Revoke a session
  */
-function revokeSession(email) {
-  sessionStore.delete(email);
-  console.log(`🔒 Session revoked for ${email}`);
+async function revokeSession(token) {
+  try {
+    await revokeSessionByToken(token);
+    console.log(`🔒 Session revoked for token: ${token.substring(0, 8)}...`);
+  } catch (error) {
+    console.error(`❌ Error revoking session:`, error.message);
+    throw error;
+  }
+}
+
+/**
+ * Check Stripe subscription status
+ */
+async function checkStripeSubscription(user) {
+  try {
+    if (!user.stripe_customer_id) {
+      console.log(`ℹ️  No Stripe customer ID for ${user.email}`);
+      return { hasActiveSubscription: false };
+    }
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const subscriptions = await stripe.subscriptions.list({
+      customer: user.stripe_customer_id,
+      status: 'active',
+      limit: 1
+    });
+
+    const hasActive = subscriptions.data.length > 0;
+    if (hasActive) {
+      console.log(`✅ Active Stripe subscription found for ${user.email}`);
+      return {
+        hasActiveSubscription: true,
+        subscription: subscriptions.data[0]
+      };
+    }
+
+    console.log(`ℹ️  No active Stripe subscription for ${user.email}`);
+    return { hasActiveSubscription: false };
+  } catch (error) {
+    console.error(`❌ Error checking Stripe subscription:`, error.message);
+    captureAuthError(error, {
+      email: user.email,
+      action: 'check_stripe_subscription'
+    });
+    throw error;
+  }
+}
+
+/**
+ * Check if trial is still valid
+ */
+function checkTrialStatus(user) {
+  if (!user.trial_end) {
+    console.log(`ℹ️  No trial end date for ${user.email}`);
+    return { trialActive: false };
+  }
+
+  const trialEnd = new Date(user.trial_end);
+  const now = new Date();
+
+  if (now < trialEnd) {
+    console.log(`✅ Trial still active for ${user.email}, expires: ${trialEnd.toISOString()}`);
+    return { trialActive: true, trialEnd: user.trial_end };
+  }
+
+  console.log(`ℹ️  Trial expired for ${user.email}`);
+  return { trialActive: false, trialEnd: user.trial_end };
 }
 
 module.exports = async (req, res) => {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  // Set CORS headers at the very beginning (before any logic)
+  res.setHeader('Access-Control-Allow-Origin', 'https://veraneural.com');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Apply rate limiting to prevent brute force (10 validation attempts per minute per IP)
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'unknown';
+  
+  try {
+    const rateLimitResult = await checkRateLimit(clientIp, 10, 60);
+    
+    if (!rateLimitResult.allowed) {
+      console.warn(`⚠️  Rate limit exceeded for IP: ${clientIp}`);
+      return res.status(429).json({
+        valid: false,
+        error: 'Too many validation requests. Please try again later.',
+        retryAfter: rateLimitResult.resetIn
+      });
+    }
+  } catch (err) {
+    console.warn('Rate limit check failed, continuing without rate limiting:', err.message);
+  }
 
   try {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { action, email, sessionToken } = req.body;
+    const { action, email, sessionToken, token } = req.body;
 
-    if (!action) {
-      return res.status(400).json({ error: 'action required (create, validate, or revoke)' });
-    }
+    // Support both 'token' and 'sessionToken' field names
+    const tokenValue = sessionToken || token;
 
     if (!email) {
-      return res.status(400).json({ error: 'email required' });
+      return res.status(400).json({ 
+        valid: false,
+        error: 'email required' 
+      });
     }
 
     // Get user to verify they exist
     const user = await getUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+      console.warn(`❌ User not found: ${email}`);
+      captureAuthError(new Error('User not found'), {
+        email: email,
+        action: 'validate_session'
+      });
+      return res.status(401).json({ 
+        valid: false, 
+        error: 'User not found' 
+      });
     }
 
     // CREATE: Generate new session token after successful authentication
     if (action === 'create') {
-      const token = createSession(email);
+      const sessionToken = await createSession(email);
       return res.status(200).json({
         success: true,
-        sessionToken: token,
+        sessionToken: sessionToken,
         expiresIn: SESSION_EXPIRY_MS,
         user: {
           id: user.id,
@@ -118,36 +212,88 @@ module.exports = async (req, res) => {
       });
     }
 
-    // VALIDATE: Check if session is still valid
-    if (action === 'validate') {
-      if (!sessionToken) {
-        return res.status(400).json({ error: 'sessionToken required for validation' });
+    // VALIDATE: Check if session is still valid + check subscription/trial
+    if (action === 'validate' || !action) {
+      // Token validation
+      if (!tokenValue) {
+        return res.status(400).json({ 
+          valid: false,
+          error: 'token or sessionToken required for validation' 
+        });
       }
 
-      const isValid = validateSessionToken(email, sessionToken);
+      const session = await validateSessionToken(tokenValue);
       
-      if (!isValid) {
+      if (!session) {
         return res.status(401).json({
           valid: false,
           error: 'Invalid or expired session'
         });
       }
 
-      return res.status(200).json({
-        valid: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          subscriptionStatus: user.subscription_status,
-          trialEnd: user.trial_end,
-          createdAt: user.created_at
+      // Session is valid and user info is loaded from DB join
+      // Check subscription status
+      try {
+        const stripeResult = await checkStripeSubscription(session);
+        
+        if (stripeResult.hasActiveSubscription) {
+          // Active paid subscription
+          return res.status(200).json({
+            valid: true,
+            trial: false,
+            subscription_status: 'active',
+            user: {
+              id: session.user_id,
+              email: session.email,
+              subscriptionStatus: session.subscription_status,
+              createdAt: session.created_at
+            }
+          });
         }
+      } catch (stripeError) {
+        console.warn('Stripe check failed, checking trial status instead');
+        captureAuthError(stripeError, {
+          email: session.email,
+          action: 'validate_session_stripe'
+        });
+      }
+
+      // Check trial status
+      const trialResult = checkTrialStatus(session);
+      
+      if (trialResult.trialActive) {
+        // Trial still valid
+        return res.status(200).json({
+          valid: true,
+          trial: true,
+          trialEnd: trialResult.trialEnd,
+          subscription_status: 'trial',
+          user: {
+            id: session.user_id,
+            email: session.email,
+            subscriptionStatus: session.subscription_status,
+            createdAt: session.created_at
+          }
+        });
+      }
+
+      // No active subscription or trial
+      return res.status(401).json({
+        valid: false,
+        error: 'No active subscription or trial',
+        redirect: '/checkout',
+        subscription_status: 'expired'
       });
     }
 
     // REVOKE: Log out user (delete session)
     if (action === 'revoke') {
-      revokeSession(email);
+      if (!tokenValue) {
+        return res.status(400).json({ 
+          error: 'token or sessionToken required for revoke' 
+        });
+      }
+      await revokeSession(tokenValue);
       return res.status(200).json({
         success: true,
         message: 'Session revoked'
@@ -158,8 +304,13 @@ module.exports = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error in validate-session:', error.message);
+    captureAuthError(error, {
+      email: req.body?.email,
+      action: 'validate_session_error'
+    });
     return res.status(500).json({
-      error: error.message || 'Failed to validate session'
+      valid: false,
+      error: 'Internal server error'
     });
   }
 };
@@ -168,4 +319,6 @@ module.exports = async (req, res) => {
 module.exports.createSession = createSession;
 module.exports.validateSessionToken = validateSessionToken;
 module.exports.revokeSession = revokeSession;
+module.exports.checkStripeSubscription = checkStripeSubscription;
+module.exports.checkTrialStatus = checkTrialStatus;
 module.exports.SESSION_EXPIRY_MS = SESSION_EXPIRY_MS;
