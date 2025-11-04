@@ -1012,10 +1012,8 @@
             
         }, 9000);
         
-        // PHASE 3: Show large interactive orb at 15s (or stop if already skipped)
+        // PHASE 3: Show large interactive orb at 15s
         setTimeout(() => {
-            if (hasSkipped) return; // Don't show if they already clicked
-            
             const darkTransition = document.getElementById('darkTransition');
             darkTransition.classList.remove('active');
             
