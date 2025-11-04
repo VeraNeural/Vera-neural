@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe - VERA</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 60px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: #000;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+    .price {
+      font-size: 64px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #000;
+    }
+    .price span {
+      font-size: 24px;
+      color: #666;
+    }
+    .features {
+      text-align: left;
+      margin: 30px 0;
+      padding: 30px 0;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+    .feature-item:before {
+      content: "✓";
+      color: #000;
+      font-weight: 700;
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    .email-input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .subscribe-button {
+      width: 100%;
+      padding: 16px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .subscribe-button:hover {
+      background: #333;
+    }
+    .subscribe-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .trial-notice {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-link:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Subscribe to VERA</h1>
+    <p class="subtitle">Continue your journey with unlimited access</p>
+    
+    <div class="price">$12<span>/month</span></div>
+    
+    <div class="features">
+      <div class="feature-item">Unlimited conversations with VERA</div>
+      <div class="feature-item">Voice-enabled responses</div>
+      <div class="feature-item">Weekly pattern analysis</div>
+      <div class="feature-item">Priority support</div>
+      <div class="feature-item">Cancel anytime</div>
+    </div>
+    
+    <input 
+      type="email" 
+      class="email-input" 
+      id="emailInput" 
+      placeholder="your@email.com"
+      required
+    />
+    
+    <button class="subscribe-button" id="subscribeButton">
+      Subscribe Now
+    </button>
+    
+    <p class="trial-notice">
+      48-hour free trial included • Secure payment via Stripe
+    </p>
+    
+    <a href="/chat.html" class="back-link">← Back to Chat</a>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById('emailInput');
+    const subscribeButton = document.getElementById('subscribeButton');
+
+    const savedEmail = localStorage.getItem('userEmail');
+    if (savedEmail) {
+      emailInput.value = savedEmail;
+    }
+
+    subscribeButton.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      subscribeButton.disabled = true;
+      subscribeButton.textContent = 'Processing...';
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.url) {
+          window.location.href = data.url;
+        } else {
+          alert('Error: ' + (data.error || 'Something went wrong'));
+          subscribeButton.disabled = false;
+          subscribeButton.textContent = 'Subscribe Now';
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Error processing checkout. Please try again.');
+        subscribeButton.disabled = false;
+        subscribeButton.textContent = 'Subscribe Now';
+      }
+    });
+
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        subscribeButton.click();
+      }
+    });
+  </script>
+</body>
+</html>

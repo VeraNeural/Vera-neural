@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrade to VERA Pro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0e27;
+      --bg-secondary: #151832;
+      --bg-tertiary: #1a1d3a;
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-tertiary: rgba(255, 255, 255, 0.5);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #7B9EF0;
+      --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .checkout-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .checkout-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .checkout-header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .checkout-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .plan-display {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .plan-display-info h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .plan-display-info p {
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+    }
+
+    .plan-display-price {
+      text-align: right;
+    }
+
+    .plan-display-price .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .plan-display-price .period {
+      color: var(--text-tertiary);
+      font-size: 0.85rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .cancel-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cancel-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .security-badge {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+
+    .security-badge svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      display: inline;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: none;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      .checkout-container {
+        padding: 24px;
+      }
+
+      .checkout-header h1 {
+        font-size: 1.4rem;
+      }
+
+      .plan-display {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .plan-display-price {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <div class="checkout-header">
+      <div class="logo">VERA</div>
+      <h1>Upgrade to Pro</h1>
+      <p>Continue your wellness journey with unlimited access</p>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+
+      <div class="plan-display">
+        <div class="plan-display-info">
+          <h3 id="planName">Monthly Plan</h3>
+          <p id="planDesc">Cancel anytime</p>
+        </div>
+        <div class="plan-display-price">
+          <div class="amount" id="planPrice">$12</div>
+          <div class="period" id="planPeriod">/month</div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Proceed to Payment</button>
+      <button type="button" class="cancel-btn" onclick="goBack()">Cancel</button>
+
+      <div class="security-badge">
+        🔒 Secure payment powered by Stripe
+      </div>
+    </form>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Redirecting to secure payment...</p>
+    </div>
+  </div>
+
+  <script>
+    // Get query parameters
+    function getQueryParam(param) {
+      const url = new URL(window.location);
+      return url.searchParams.get(param);
+    }
+
+    // Initialize form
+    function initCheckout() {
+      const email = getQueryParam('email');
+      const phone = getQueryParam('phone') || '';
+      const plan = getQueryParam('plan') || 'monthly';
+
+      if (!email) {
+        showError('Missing email. Please complete your profile first.');
+        return;
+      }
+
+      // Pre-fill form
+      document.getElementById('email').value = email;
+      document.getElementById('phone').value = phone;
+
+      // Update plan display
+      if (plan === 'annual') {
+        document.getElementById('planName').textContent = 'Annual Plan';
+        document.getElementById('planDesc').textContent = 'Save 32%';
+        document.getElementById('planPrice').textContent = '$99';
+        document.getElementById('planPeriod').textContent = '/year';
+      } else {
+        document.getElementById('planName').textContent = 'Monthly Plan';
+        document.getElementById('planDesc').textContent = 'Cancel anytime';
+        document.getElementById('planPrice').textContent = '$12';
+        document.getElementById('planPeriod').textContent = '/month';
+      }
+
+      // Store plan for submission
+      localStorage.setItem('selectedPlan', plan);
+    }
+
+    // Handle form submission
+    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const plan = localStorage.getItem('selectedPlan') || 'monthly';
+
+      // Show loading state
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('loading').style.display = 'block';
+
+      try {
+        // Call checkout API
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, phone_number: phone, plan })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create checkout session');
+        }
+
+        // Redirect to Stripe checkout
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL returned');
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        showError(error.message);
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('loading').style.display = 'none';
+      }
+    });
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+
+    function goBack() {
+      window.location.href = '/vera-pro.html';
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', initCheckout);
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>VERA - Your Nervous System Companion</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="theme-color" content="#667eea">
+  <!-- This file is an imported preview of your richer chat UI. It calls the same backend endpoints. -->
+  <!-- For brevity, we reuse the existing chat styles; you can paste your full themed CSS/JS here if you prefer. -->
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin:0; background: linear-gradient(180deg,#E8D5F2 0%,#D4C5F9 100%); color:#2D2D3F; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display:flex; align-items:center; justify-content:space-between; padding:16px; backdrop-filter: blur(16px); background: rgba(255,255,255,0.7); border-bottom:1px solid rgba(155,137,212,0.2); position:sticky; top:0; }
+    .title { display:flex; align-items:center; gap:12px; }
+    .orb { width:40px; height:40px; border-radius:50%; background: radial-gradient(circle at 40% 40%, #7B9EF0 0%, #9B8FD4 50%, #B19CD9 100%); box-shadow:0 0 20px rgba(155,137,212,0.5); }
+    .chat { padding:24px; }
+    .message { margin-bottom: 16px; }
+    .bubble { display:inline-block; padding:12px 16px; border-radius:14px; border:1px solid rgba(155,137,212,0.2); backdrop-filter: blur(6px); max-width:70%; }
+    .assistant .bubble { background: linear-gradient(135deg, rgba(177,156,217,0.15) 0%, rgba(123,158,240,0.1) 100%); }
+    .user { text-align:right; }
+    .user .bubble { background: linear-gradient(135deg, rgba(123,158,240,0.2) 0%, rgba(100,181,246,0.15) 100%); border-color: rgba(123,158,240,0.3); box-shadow: 0 4px 16px rgba(123,158,240,0.15); }
+    .input { position:sticky; bottom:0; padding:16px; background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); border-top:1px solid rgba(155,137,212,0.2); }
+    .row { display:flex; gap:12px; max-width:960px; margin: 0 auto; }
+    textarea { flex:1; border:1px solid rgba(155,137,212,0.2); border-radius:12px; padding:12px; font-family:inherit; font-size:16px; background:#fff; color:#2D2D3F; resize: vertical; min-height:44px; }
+    button { border:none; border-radius:999px; padding:12px 20px; color:#fff; cursor:pointer; background: linear-gradient(135deg,#B19CD9,#7B9EF0); box-shadow:0 8px 24px rgba(155,137,212,0.35); font-weight:600; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">
+      <div class="orb"></div>
+      <div>
+        <div style="letter-spacing:.15em;">VERA</div>
+        <div style="font-size:12px; color:#6B6B7B">Present with you</div>
+      </div>
+    </div>
+    <div>
+      <!-- Placeholder for menu / theme toggle if you want to extend later -->
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="trialBanner" style="display:none; margin:16px 0; padding:12px 16px; border-radius:12px; border:1px solid rgba(155,137,212,0.2); background:rgba(255,255,255,0.7)">
+      <span id="trialText">Trial: 48 hours remaining</span>
+    </div>
+
+    <div class="chat" id="chat"></div>
+  </div>
+
+  <div class="input">
+    <div class="row">
+      <textarea id="message" placeholder="What's present in your body right now..." rows="1"></textarea>
+      <button id="send">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const messageEl = document.getElementById('message');
+    const sendBtn = document.getElementById('send');
+
+    let userEmail = localStorage.getItem('userEmail') || null;
+    let anonId = localStorage.getItem('vera_anon_id');
+    if (!anonId) {
+      anonId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substring(2,9);
+      localStorage.setItem('vera_anon_id', anonId);
+    }
+
+    function add(role, text) {
+      const row = document.createElement('div');
+      row.className = 'message ' + (role === 'assistant' ? 'assistant' : 'user');
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      chat.appendChild(row);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function getJSON(url, opts) {
+      const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts });
+      const text = await res.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch {}
+      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+      return data;
+    }
+
+    async function loadTrial() {
+      try {
+        const qs = userEmail ? ('?email=' + encodeURIComponent(userEmail)) : '';
+        const data = await getJSON('/api/subscription-status' + qs);
+        if (data && data.subscription && data.subscription.isOnTrial) {
+          document.getElementById('trialBanner').style.display = 'block';
+          const hrs = Math.max(0, Math.round(data.subscription.hoursRemaining || 0));
+          document.getElementById('trialText').textContent = 'Trial: ' + (hrs > 0 ? (hrs + ' hours remaining') : 'ending soon');
+        }
+      } catch {}
+    }
+
+    async function send() {
+      const text = messageEl.value.trim();
+      if (!text) return;
+      add('user', text);
+      messageEl.value = '';
+      sendBtn.disabled = true;
+      try {
+        const body = { message: text, email: userEmail, anonId };
+        const data = await getJSON('/api/chat', { method: 'POST', body: JSON.stringify(body) });
+        if (data && data.response) {
+          add('assistant', data.response);
+        }
+      } catch (e) {
+        add('assistant', "I'm having trouble connecting right now. Please try again in a moment.");
+      } finally {
+        sendBtn.disabled = false;
+        messageEl.focus();
+      }
+    }
+
+    sendBtn.addEventListener('click', send);
+    messageEl.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+
+    // initial
+    add('assistant', "I'm here. What's present for you right now?");
+    loadTrial();
+  </script>
+</body>
+</html>

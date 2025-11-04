@@ -1,0 +1,5152 @@
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="en"><html lang="en">
+
+<head><head>
+
+  <meta charset="UTF-8">  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <title>VERA</title>  <title>VERA - Your Nervous System Companion</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <style>  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+    body {  <link rel="manifest" href="/site.webmanifest">
+
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  <meta name="theme-color" content="#667eea">
+
+      background: linear-gradient(180deg, #E8D5F2 0%, #D4C5F9 100%);  <style>
+
+      color: #2D2D3F;    * {
+
+      height: 100vh;      margin: 0;
+
+      display: flex;      padding: 0;
+
+      flex-direction: column;      box-sizing: border-box;
+
+      overflow: hidden;    }
+
+    }
+
+    html {
+
+    .app {      -webkit-text-size-adjust: 100%;
+
+      display: flex;      -webkit-font-smoothing: antialiased;
+
+      flex-direction: column;      height: 100%;
+
+      height: 100%;      width: 100%;
+
+      width: 100%;      -webkit-user-select: none;
+
+    }      user-select: none;
+
+    }
+
+    .header {
+
+      padding: 1rem;    /* Theme Variables */
+
+      background: rgba(255, 255, 255, 0.9);    :root {
+
+      border-bottom: 1px solid rgba(155, 137, 212, 0.2);      /* Light Theme (Default) */
+
+      display: flex;      --bg-gradient: linear-gradient(180deg, #E8D5F2 0%, #D4C5F9 100%);
+
+      align-items: center;      --header-bg: rgba(255, 255, 255, 0.7);
+
+      gap: 1rem;      --container-bg: rgba(255, 255, 255, 0.95);
+
+      flex-shrink: 0;      --message-bg: #FFFFFF;
+
+    }      --user-message-bg: linear-gradient(135deg, rgba(155, 137, 212, 0.15) 0%, rgba(123, 158, 240, 0.1) 100%);
+
+      --text-primary: #2D2D3F;
+
+    .header h1 {      --text-secondary: #6B6B7B;
+
+      font-size: 1.3rem;      --text-soft: #9B9BA5;
+
+      font-weight: 600;      --border-color: rgba(155, 137, 212, 0.2);
+
+    }      --input-bg: #FFFFFF;
+
+      --orb-1: #B19CD9;
+
+    .messages {      --orb-2: #9B8FD4;
+
+      flex: 1;      --orb-3: #7B9EF0;
+
+      overflow-y: auto;      --sidebar-bg: rgba(255, 255, 255, 0.95);
+
+      padding: 1rem;      --quick-button-bg: rgba(255, 255, 255, 0.8);
+
+      display: flex;      --quick-button-hover: rgba(155, 137, 212, 0.2);
+
+      flex-direction: column;      --breath-circle: rgba(155, 137, 212, 0.1);
+
+      gap: 1rem;      --dropdown-bg: rgba(255, 255, 255, 0.98);
+
+    }    }
+
+
+
+    .message {    /* Dark Theme */
+
+      display: flex;    [data-theme="dark"] {
+
+      gap: 0.75rem;      --bg-gradient: radial-gradient(ellipse at top, #151832 0%, #0A0E27 40%, #000 100%);
+
+      animation: slideIn 0.3s ease;      --header-bg: rgba(10, 14, 39, 0.95);
+
+    }      --container-bg: rgba(21, 24, 50, 0.95);
+
+      --message-bg: rgba(255, 255, 255, 0.05);
+
+    @keyframes slideIn {      --user-message-bg: linear-gradient(135deg, rgba(100, 181, 246, 0.2) 0%, rgba(155, 89, 182, 0.15) 100%);
+
+      from { opacity: 0; transform: translateY(10px); }      --text-primary: rgba(255, 255, 255, 0.95);
+
+      to { opacity: 1; transform: translateY(0); }      --text-secondary: rgba(255, 255, 255, 0.75);
+
+    }      --text-soft: rgba(255, 255, 255, 0.5);
+
+      --border-color: rgba(255, 255, 255, 0.1);
+
+    .message.user {      --input-bg: rgba(255, 255, 255, 0.05);
+
+      justify-content: flex-end;      --orb-1: #9B59B6;
+
+    }      --orb-2: #B19CD9;
+
+      --orb-3: #64B5F6;
+
+    .bubble {      --sidebar-bg: rgba(21, 24, 50, 0.95);
+
+      max-width: 80%;      --quick-button-bg: rgba(255, 255, 255, 0.05);
+
+      padding: 0.75rem 1rem;      --quick-button-hover: rgba(155, 89, 182, 0.3);
+
+      border-radius: 18px;      --breath-circle: rgba(100, 181, 246, 0.05);
+
+      line-height: 1.5;      --dropdown-bg: rgba(21, 24, 50, 0.98);
+
+      word-wrap: break-word;    }
+
+      white-space: pre-wrap;
+
+    }    /* Dark theme message bubbles */
+
+    [data-theme="dark"] .message-vera .message-bubble {
+
+    .message.vera .bubble {      background: linear-gradient(135deg, 
+
+      background: #FFFFFF;        rgba(155, 89, 182, 0.25) 0%, 
+
+      border: 1px solid rgba(155, 137, 212, 0.2);        rgba(177, 156, 217, 0.2) 50%,
+
+      color: #2D2D3F;        rgba(100, 181, 246, 0.15) 100%);
+
+    }      border: 1px solid rgba(155, 89, 182, 0.4);
+
+      box-shadow: 
+
+    .message.user .bubble {        0 4px 20px rgba(155, 89, 182, 0.3),
+
+      background: linear-gradient(135deg, #B19CD9, #7B9EF0);        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+      color: white;    }
+
+    }
+
+    [data-theme="dark"] .message-user .message-bubble {
+
+    .input-area {      background: linear-gradient(135deg, 
+
+      display: flex;        rgba(100, 181, 246, 0.25) 0%, 
+
+      gap: 0.75rem;        rgba(123, 158, 240, 0.2) 100%);
+
+      padding: 1rem;      border: 1px solid rgba(100, 181, 246, 0.4);
+
+      background: rgba(255, 255, 255, 0.9);      box-shadow: 
+
+      border-top: 1px solid rgba(155, 137, 212, 0.2);        0 4px 20px rgba(100, 181, 246, 0.25),
+
+      flex-shrink: 0;        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    }    }
+
+
+
+    textarea {    /* Deep Dark Theme */
+
+      flex: 1;    [data-theme="deep"] {
+
+      padding: 0.75rem 1rem;      --bg-gradient: linear-gradient(180deg, #0A0A0A 0%, #000000 100%);
+
+      border: 1px solid rgba(155, 137, 212, 0.3);      --header-bg: rgba(0, 0, 0, 0.9);
+
+      border-radius: 12px;      --container-bg: rgba(10, 10, 10, 0.95);
+
+      font-family: inherit;      --message-bg: rgba(255, 255, 255, 0.02);
+
+      font-size: 1rem;      --user-message-bg: rgba(155, 137, 212, 0.05);
+
+      resize: none;      --text-primary: rgba(255, 255, 255, 0.9);
+
+      max-height: 100px;      --text-secondary: rgba(255, 255, 255, 0.6);
+
+      min-height: 44px;      --text-soft: rgba(255, 255, 255, 0.4);
+
+      outline: none;      --border-color: rgba(255, 255, 255, 0.05);
+
+    }      --input-bg: rgba(255, 255, 255, 0.02);
+
+      --orb-1: #6B5B8C;
+
+    textarea:focus {      --orb-2: #7B6B9C;
+
+      border-color: #B19CD9;      --orb-3: #5B7BA6;
+
+      box-shadow: 0 0 0 3px rgba(177, 156, 217, 0.1);      --sidebar-bg: rgba(10, 10, 10, 0.95);
+
+    }      --quick-button-bg: rgba(255, 255, 255, 0.02);
+
+      --quick-button-hover: rgba(255, 255, 255, 0.05);
+
+    button {      --breath-circle: rgba(255, 255, 255, 0.02);
+
+      width: 44px;      --dropdown-bg: rgba(10, 10, 10, 0.98);
+
+      height: 44px;    }
+
+      border-radius: 50%;
+
+      background: linear-gradient(135deg, #B19CD9, #7B9EF0);    /* Deep dark theme message bubbles */
+
+      border: none;    [data-theme="deep"] .message-vera .message-bubble {
+
+      color: white;      background: linear-gradient(135deg, 
+
+      cursor: pointer;        rgba(107, 91, 140, 0.3) 0%, 
+
+      display: flex;        rgba(123, 107, 156, 0.25) 50%,
+
+      align-items: center;        rgba(91, 123, 166, 0.2) 100%);
+
+      justify-content: center;      border: 1px solid rgba(107, 91, 140, 0.5);
+
+      flex-shrink: 0;      box-shadow: 
+
+      transition: transform 0.2s;        0 4px 20px rgba(107, 91, 140, 0.4),
+
+    }        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    }
+
+    button:hover:not(:disabled) {
+
+      transform: scale(1.1);    [data-theme="deep"] .message-user .message-bubble {
+
+    }      background: linear-gradient(135deg, 
+
+        rgba(91, 123, 166, 0.3) 0%, 
+
+    button:disabled {        rgba(100, 140, 180, 0.25) 100%);
+
+      opacity: 0.5;      border: 1px solid rgba(91, 123, 166, 0.5);
+
+      cursor: not-allowed;      box-shadow: 
+
+    }        0 4px 20px rgba(91, 123, 166, 0.3),
+
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    .welcome {    }
+
+      flex: 1;
+
+      display: flex;    body {
+
+      flex-direction: column;      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      align-items: center;      background: var(--bg-gradient);
+
+      justify-content: center;      color: var(--text-primary);
+
+      padding: 2rem 1rem;      height: 100vh;
+
+      text-align: center;      overflow: hidden;
+
+    }      display: flex;
+
+      flex-direction: column;
+
+    .welcome.hidden {      position: relative;
+
+      display: none;      transition: all 0.3s ease;
+
+    }      width: 100%;
+
+      -webkit-user-select: none;
+
+    .welcome h2 {      user-select: none;
+
+      font-size: 2rem;    }
+
+      margin-bottom: 1rem;
+
+    }    /* Ensure proper full-height layout */
+
+    html {
+
+    .welcome p {      height: 100%;
+
+      color: #6B6B7B;      width: 100%;
+
+      margin-bottom: 2rem;    }
+
+      max-width: 300px;
+
+    }    /* Living Background */
+
+    .living-background {
+
+    .welcome button {      position: fixed;
+
+      width: auto;      top: 0;
+
+      height: auto;      left: 0;
+
+      padding: 0.75rem 1.5rem;      width: 100%;
+
+      margin: 0.5rem;      height: 100%;
+
+      background: rgba(255, 255, 255, 0.8);      pointer-events: none;
+
+      color: #2D2D3F;      z-index: 0;
+
+      border: 1px solid rgba(155, 137, 212, 0.2);    }
+
+    }
+
+    .breath-circle {
+
+    .messages.hidden {      position: absolute;
+
+      display: none;      width: 400px;
+
+    }      height: 400px;
+
+  </style>      border-radius: 50%;
+
+</head>      background: radial-gradient(circle, var(--breath-circle) 0%, transparent 70%);
+
+<body>      animation: breathe 8s ease-in-out infinite;
+
+  <div class="app">    }
+
+    <div class="header">
+
+      <h1>VERA</h1>    @keyframes breathe {
+
+    </div>      0%, 100% { transform: scale(1); opacity: 0.3; }
+
+      50% { transform: scale(1.3); opacity: 0.6; }
+
+    <div class="welcome" id="welcome">    }
+
+      <h2>I'm VERA</h2>
+
+      <p>I'm here for you. This is a space where your nervous system is understood.</p>    /* Header - FROZEN AT TOP */
+
+      <button onclick="quickStart('I don\\'t know where to start')">I don't know where to start</button>    .chat-header {
+
+      <button onclick="quickStart('My chest is tight and I can\\'t breathe')">My chest is tight</button>      padding: 1rem 1.5rem;
+
+      <button onclick="quickStart('Everything feels heavy today')">Everything feels heavy</button>      display: flex;
+
+    </div>      justify-content: space-between;
+
+      align-items: center;
+
+    <div class="messages hidden" id="messages"></div>      background: var(--header-bg);
+
+      backdrop-filter: blur(20px);
+
+    <div class="input-area">      z-index: 1001;
+
+      <textarea id="input" placeholder="What's present in your body right now..." rows="1"></textarea>      border-bottom: 1px solid var(--border-color);
+
+      <button id="send" onclick="send()">      position: relative;
+
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">      flex-shrink: 0;
+
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>      width: 100%;
+
+        </svg>      box-sizing: border-box;
+
+      </button>      -webkit-user-select: none;
+
+    </div>      user-select: none;
+
+  </div>      overflow: visible;
+
+    }
+
+  <script>
+
+    let isSending = false;    /* Trial Banner - FROZEN BELOW HEADER */
+
+    let conversationId = null;    .trial-banner {
+
+      padding: 0.75rem 1.5rem;
+
+    const input = document.getElementById('input');      display: flex;
+
+    const send = document.getElementById('send');      align-items: center;
+
+    const messages = document.getElementById('messages');      justify-content: space-between;
+
+    const welcome = document.getElementById('welcome');      background: linear-gradient(90deg, rgba(155, 137, 212, 0.1) 0%, rgba(123, 158, 240, 0.1) 100%);
+
+      border-bottom: 1px solid rgba(155, 137, 212, 0.2);
+
+    // Auto-resize textarea      z-index: 99;
+
+    input.addEventListener('input', () => {      gap: 1rem;
+
+      input.style.height = 'auto';      flex-wrap: wrap;
+
+      input.style.height = Math.min(input.scrollHeight, 100) + 'px';      flex-shrink: 0;
+
+    });      width: 100%;
+
+      box-sizing: border-box;
+
+    // Send on Enter (Shift+Enter for newline)      -webkit-user-select: none;
+
+    input.addEventListener('keypress', (e) => {      user-select: none;
+
+      if (e.key === 'Enter' && !e.shiftKey) {    }
+
+        e.preventDefault();
+
+        send();    .trial-banner.hidden {
+
+      }      display: none;
+
+    });    }
+
+
+
+    function quickStart(text) {    .trial-banner.critical {
+
+      input.value = text;      background: linear-gradient(90deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 171, 87, 0.15) 100%);
+
+      input.style.height = 'auto';      border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+
+      input.style.height = Math.min(input.scrollHeight, 100) + 'px';    }
+
+      input.focus();
+
+      setTimeout(() => send(), 100);    .trial-banner-text {
+
+    }      font-size: 0.95rem;
+
+      color: var(--text-primary);
+
+    function addMessage(role, text) {      font-weight: 500;
+
+      const msg = document.createElement('div');      flex: 1;
+
+      msg.className = `message ${role}`;      min-width: 200px;
+
+      msg.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;    }
+
+      messages.appendChild(msg);
+
+      messages.scrollTop = messages.scrollHeight;    .trial-banner.critical .trial-banner-text {
+
+    }      color: #d84444;
+
+    }
+
+    function escapeHtml(text) {
+
+      const div = document.createElement('div');    .trial-progress {
+
+      div.textContent = text;      display: flex;
+
+      return div.innerHTML;      align-items: center;
+
+    }      gap: 0.75rem;
+
+      flex-shrink: 0;
+
+    async function send() {    }
+
+      const text = input.value.trim();
+
+      if (!text || isSending) return;    .trial-progress-bar {
+
+      width: 120px;
+
+      isSending = true;      height: 6px;
+
+      send.disabled = true;      background: rgba(155, 137, 212, 0.2);
+
+      border-radius: 3px;
+
+      // Show chat view      overflow: hidden;
+
+      if (welcome.classList.contains('hidden') === false) {    }
+
+        welcome.classList.add('hidden');
+
+        messages.classList.remove('hidden');    .trial-progress-fill {
+
+      }      height: 100%;
+
+      background: linear-gradient(90deg, #9B8FD4 0%, #7B9EF0 100%);
+
+      // Add user message      border-radius: 3px;
+
+      addMessage('user', text);      transition: width 0.3s ease;
+
+      input.value = '';    }
+
+      input.style.height = 'auto';
+
+      input.style.height = '44px';    .trial-progress-bar.critical .trial-progress-fill {
+
+      background: linear-gradient(90deg, #ff6b6b 0%, #ffab57 100%);
+
+      try {    }
+
+        const response = await fetch('/api/chat', {
+
+          method: 'POST',    .trial-days {
+
+          headers: { 'Content-Type': 'application/json' },      font-size: 0.85rem;
+
+          body: JSON.stringify({      color: var(--text-secondary);
+
+            message: text,      font-weight: 600;
+
+            conversationId: conversationId      min-width: 45px;
+
+          })      text-align: right;
+
+        });    }
+
+
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);    .trial-days.critical {
+
+        const data = await response.json();      color: #d84444;
+
+    }
+
+        if (data.success && data.response) {
+
+          addMessage('vera', data.response);    .vera-identity {
+
+          if (data.conversationId) conversationId = data.conversationId;      display: flex;
+
+        } else {      align-items: center;
+
+          addMessage('vera', 'I had trouble understanding. Please try again.');      gap: 1rem;
+
+        }      position: relative;
+
+      } catch (error) {      overflow: visible;
+
+        console.error('Error:', error);    }
+
+        addMessage('vera', 'I\'m having trouble connecting. Please try again.');
+
+      } finally {    .menu-toggle {
+
+        isSending = false;      width: 44px;
+
+        send.disabled = false;      height: 44px;
+
+        input.focus();      display: flex;
+
+      }      flex-direction: column;
+
+    }      justify-content: center;
+
+  </script>      align-items: center;
+
+</body>      gap: 4px;
+
+</html>      background: transparent;
+
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      padding: 8px;
+      position: relative;
+      border-radius: 8px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: visible;
+      z-index: 2001;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      pointer-events: auto !important;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-toggle.active {
+      background: rgba(var(--primary-rgb, 99, 102, 241), 0.1);
+    }
+
+    .menu-toggle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 8px;
+      background: var(--quick-button-hover);
+      transform: translate(-50%, -50%);
+      transition: width 0.4s, height 0.4s;
+    }
+
+    .menu-toggle:hover::before {
+      width: 100%;
+      height: 100%;
+    }
+
+    .menu-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    .menu-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .menu-line {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-toggle:hover .menu-line {
+      width: 20px;
+    }
+
+    .menu-toggle:hover .menu-line:nth-child(2) {
+      width: 24px;
+    }
+
+    /* Hamburger Dropdown Menu */
+    .hamburger-dropdown {
+      position: fixed;
+      top: 65px;
+      left: 1rem;
+      background: var(--dropdown-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      min-width: auto;
+      width: 280px;
+      max-width: calc(100vw - 2rem);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      display: none;
+      z-index: 2001;
+      overflow: visible;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      visibility: hidden;
+    }
+
+    .hamburger-dropdown.active {
+      display: block;
+      pointer-events: auto;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #menuBackdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 2000;
+      pointer-events: auto;
+    }
+
+    #menuBackdrop.active {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 1rem 1.25rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      pointer-events: auto !important;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background: var(--quick-button-hover);
+    }
+
+    /* Dropdown Control Item (Theme) */
+    .dropdown-control-item {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .dropdown-control-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .dropdown-control-name {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .dropdown-theme-selector {
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.5rem 0 0.25rem 0;
+    }
+
+    .dropdown-theme-btn {
+      flex: 1;
+      padding: 0.6rem 0.8rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-theme-btn:hover {
+      background: var(--quick-button-hover);
+      border-color: var(--orb-1);
+      transform: translateY(-1px);
+    }
+
+    .dropdown-theme-btn.active {
+      background: var(--quick-button-hover);
+      border-color: var(--orb-1);
+      font-weight: 600;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 0;
+    }
+
+    .vera-presence-indicator {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--orb-3) 0%, var(--orb-2) 50%, var(--orb-1) 100%);
+      animation: presencePulse 4s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(155, 137, 212, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Shimmer on presence indicator */
+    .vera-presence-indicator::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: presenceShimmer 4s linear infinite;
+    }
+
+    @keyframes presenceShimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @keyframes presencePulse {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 20px rgba(155, 137, 212, 0.4);
+      }
+      50% { 
+        transform: scale(1.1); 
+        box-shadow: 0 0 40px rgba(155, 137, 212, 0.7);
+      }
+    }
+
+    .vera-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vera-title h1 {
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--text-primary);
+    }
+
+    .status-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .sound-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--quick-button-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sound-toggle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.2), rgba(100, 181, 246, 0.15));
+      border: 1.5px solid rgba(155, 137, 212, 0.4);
+      color: var(--orb-1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1.4rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(155, 137, 212, 0.1);
+    }
+
+    .sound-toggle-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), transparent);
+      pointer-events: none;
+    }
+
+    .sound-toggle-btn:hover {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.35), rgba(100, 181, 246, 0.25));
+      border-color: rgba(155, 137, 212, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(155, 137, 212, 0.2);
+    }
+
+    .sound-toggle-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 4px rgba(155, 137, 212, 0.15);
+    }
+
+    .sound-toggle-btn.disabled {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.1), rgba(100, 181, 246, 0.08));
+      border-color: rgba(155, 137, 212, 0.2);
+      opacity: 0.6;
+      color: rgba(155, 137, 212, 0.5);
+    }
+
+    .sound-icon {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sound-toggle-btn.disabled .sound-icon::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 2px;
+      background: currentColor;
+      transform: rotate(-45deg);
+      top: 50%;
+      left: 50%;
+      margin-left: -13px;
+      margin-top: -1px;
+    }
+
+    .sound-toggle:hover {
+      background: var(--quick-button-hover);
+      transform: scale(1.08);
+      border-color: var(--orb-1);
+    }
+
+    .sound-toggle:active {
+      transform: scale(0.95);
+    }
+
+    .sound-toggle.disabled svg {
+      opacity: 0.4;
+    }
+
+    .sound-toggle.disabled:hover {
+      transform: none;
+    }
+
+    .sound-toggle svg {
+      width: 24px;
+      height: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .sound-toggle.disabled #volumeWaves {
+      display: none;
+    }
+
+    .sound-toggle.disabled #volumeOn {
+      opacity: 0.5;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: var(--quick-button-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .theme-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .theme-option::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(155, 137, 212, 0.2) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .theme-option:hover::after {
+      width: 60px;
+      height: 60px;
+    }
+
+    .theme-option:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-option.active {
+      border-color: var(--orb-1);
+      transform: scale(1.15);
+      box-shadow: 0 0 15px rgba(155, 137, 212, 0.4);
+    }
+
+    .theme-option.active::after {
+      width: 60px;
+      height: 60px;
+    }
+
+    /* Dropdown orb visuals (used in hamburger menu) */
+    .dropdown-orb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 0 8px rgba(255,255,255,0.03);
+    }
+
+    .dropdown-orb-light { background: linear-gradient(135deg, #F6ECFF 0%, #EADDFF 100%); }
+    .dropdown-orb-dark { background: linear-gradient(135deg, #2A2E3C 0%, #1A1C28 100%); }
+    .dropdown-orb-deep { background: linear-gradient(135deg, #0B0B0B 0%, #000000 100%); }
+    .dropdown-orb-theme { background: linear-gradient(135deg, #BDA8E8 0%, #A6C8F6 100%); }
+
+    .dropdown-orb-new { background: linear-gradient(135deg, #DFF7F0 0%, #CFEFE8 100%); }
+    .dropdown-orb-breathe { background: linear-gradient(135deg, #D8F3FF 0%, #C0E8FF 100%); }
+    .dropdown-orb-history { background: linear-gradient(135deg, #E6F0FF 0%, #CFE0FF 100%); }
+    .dropdown-orb-journal { background: linear-gradient(135deg, #FFF4E6 0%, #FFE6CC 100%); }
+    .dropdown-orb-grounding { background: linear-gradient(135deg, #E6F9F5 0%, #D4F0EB 100%); }
+    .dropdown-orb-subscription { background: linear-gradient(135deg, #F3E8FF 0%, #E8D8FF 100%); }
+    .dropdown-orb-settings { background: linear-gradient(135deg, #F0F7F4 0%, #E8F0EC 100%); }
+    .dropdown-orb-logout { background: linear-gradient(135deg, #FFEDEB 0%, #FFDBD6 100%); }
+
+    /* Optional neuron accent for larger presence visuals */
+    .dropdown-orb.neuron {
+      box-shadow: 0 6px 18px rgba(161,145,201,0.18), inset 0 0 6px rgba(255,255,255,0.04);
+      transform: rotate(10deg);
+    }
+
+    .dropdown-theme-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 6px 10px;
+      border-radius: 10px;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .dropdown-theme-btn.active, .dropdown-theme-btn:hover {
+      background: var(--quick-button-hover);
+      border-color: var(--orb-1);
+      transform: translateY(-2px);
+    }
+
+    .theme-light {
+      background: linear-gradient(135deg, #E8D5F2, #D4C5F9);
+    }
+
+    .theme-dark {
+      background: linear-gradient(135deg, #151832, #0A0E27);
+    }
+
+    .theme-deep {
+      background: linear-gradient(135deg, #0A0A0A, #000000);
+    }
+
+    /* Main Content - Proper Freeze/Hold Layout */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 0;
+    }
+
+    /* Welcome Container - SCROLLABLE */
+    .welcome-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      z-index: 10;
+      animation: welcomeFadeIn 1.2s ease-out;
+      overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .welcome-container.active,
+    .journaling-panel.active,
+    .grounding-panel.active {
+      display: flex;
+    }
+
+    @keyframes welcomeFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .vera-orb-large {
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 40% 40%, var(--orb-3) 0%, var(--orb-2) 35%, var(--orb-1) 70%);
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      animation: gentlePulse 4s infinite, float 6s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Shimmer effect on orb */
+    .vera-orb-large::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      );
+      animation: orbShimmer 3s linear infinite;
+    }
+
+    @keyframes orbShimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 20px 60px rgba(155, 137, 212, 0.3);
+      }
+      50% { 
+        transform: scale(1.05); 
+        box-shadow: 0 30px 80px rgba(155, 137, 212, 0.5);
+      }
+    }
+
+    .welcome-text {
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .welcome-text h2 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      animation: titleReveal 1s ease-out 0.3s backwards;
+    }
+
+    @keyframes titleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-text p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      animation: subtitleReveal 1s ease-out 0.6s backwards;
+    }
+
+    @keyframes subtitleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Quick Start Buttons */
+    .quick-starts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 2rem;
+      max-width: 500px;
+      animation: buttonsReveal 1s ease-out 0.9s backwards;
+    }
+
+    @keyframes buttonsReveal {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .quick-start-label {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      width: 100%;
+    }
+
+    .quick-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--quick-button-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 25px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Living glow effect */
+    .quick-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(155, 137, 212, 0.3) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .quick-button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .quick-button:hover {
+      background: var(--quick-button-hover);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 
+        0 8px 25px rgba(155, 137, 212, 0.3),
+        0 0 40px rgba(155, 137, 212, 0.2);
+      border-color: var(--orb-2);
+    }
+
+    .quick-button:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    /* ========== NAVIGATION BUTTONS ========== */
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.2) 0%, rgba(123, 158, 240, 0.15) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.35) 0%, rgba(123, 158, 240, 0.25) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(155, 137, 212, 0.2);
+    }
+
+    /* ========== JOURNALING PANEL ========== */
+    .journaling-panel,
+    .grounding-panel {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .journaling-panel.active,
+    .grounding-panel.active {
+      display: flex;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(180deg, var(--header-bg) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .panel-header h3 {
+      font-size: 1.3rem;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .panel-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-soft);
+      transition: all 0.3s ease;
+    }
+
+    .panel-close:hover {
+      color: var(--text-primary);
+      transform: scale(1.2);
+    }
+
+    .panel-content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .panel-subtitle {
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    /* ========== PROMPT SELECTOR ========== */
+    .prompt-category-tabs {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .prompt-tab {
+      padding: 0.5rem 1.25rem;
+      background: var(--quick-button-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .prompt-tab.active {
+      background: var(--orb-1);
+      color: white;
+      border-color: var(--orb-1);
+    }
+
+    .prompt-tab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(155, 137, 212, 0.2);
+    }
+
+    .prompts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .prompt-card {
+      padding: 1.5rem;
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .prompt-card:hover {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.15) 0%, rgba(123, 158, 240, 0.1) 100%);
+      transform: translateX(5px);
+      box-shadow: 0 8px 20px rgba(155, 137, 212, 0.15);
+      border-color: var(--orb-2);
+    }
+
+    .prompt-card p {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    /* ========== JOURNAL ENTRY AREA ========== */
+    .journal-entry-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .entry-close {
+      margin-bottom: 1rem;
+    }
+
+    .entry-close button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .entry-close button:hover {
+      color: var(--text-primary);
+      transform: translateX(-3px);
+    }
+
+    .selected-prompt {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      padding: 1rem;
+      background: var(--message-bg);
+      border-left: 4px solid var(--orb-1);
+      border-radius: 8px;
+      margin: 0 0 1rem 0;
+    }
+
+    .journal-textarea {
+      flex: 1;
+      min-height: 280px;
+      padding: 1.5rem;
+      background: var(--input-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      color: var(--text-primary);
+      font-family: 'Georgia', 'Garamond', serif;
+      font-size: 1rem;
+      line-height: 1.8;
+      resize: vertical;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .journal-textarea:focus {
+      outline: none;
+      border-color: var(--orb-1);
+      box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.05),
+        0 0 0 3px rgba(155, 137, 212, 0.15);
+      background: var(--container-bg);
+    }
+
+    .journal-textarea::placeholder {
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    /* VERA Monitoring Indicator */
+    .vera-monitoring {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.08) 0%, rgba(123, 158, 240, 0.05) 100%);
+      border: 1px solid rgba(155, 137, 212, 0.2);
+      border-radius: 12px;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .vera-monitoring-dot {
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      border-radius: 50%;
+      animation: monitoringPulse 2s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(155, 137, 212, 0.5);
+    }
+
+    @keyframes monitoringPulse {
+      0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    .vera-monitoring-text {
+      color: var(--text-secondary);
+    }
+
+    .vera-monitoring-text strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .emotional-state-select {
+      padding: 0.75rem 1rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .emotional-state-select:focus {
+      outline: none;
+      border-color: var(--orb-1);
+      box-shadow: 0 0 0 3px rgba(155, 137, 212, 0.1);
+    }
+
+    .save-journal-btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, var(--orb-1) 0%, var(--orb-2) 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .save-journal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(155, 137, 212, 0.3);
+    }
+
+    .journal-message {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* ========== GROUNDING TECHNIQUES ========== */
+    .grounding-techniques {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .grounding-tech-card {
+      padding: 1.5rem;
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grounding-tech-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .grounding-tech-card:hover::before {
+      left: 100%;
+    }
+
+    .grounding-tech-card:hover {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.15) 0%, rgba(123, 158, 240, 0.1) 100%);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(155, 137, 212, 0.2);
+      border-color: var(--orb-1);
+    }
+
+    .grounding-tech-card:active {
+      transform: translateY(-4px);
+    }
+
+    .tech-duration {
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .tech-duration::before {
+      content: '⏱';
+      font-size: 0.9rem;
+    }
+
+    .tech-name {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tech-description {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    /* Grounding Guide Styles */
+    .grounding-guide {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .guide-close {
+      margin-bottom: 0.5rem;
+    }
+
+    .guide-close button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .guide-close button:hover {
+      color: var(--text-primary);
+      transform: translateX(-3px);
+    }
+
+    .guide-title {
+      font-size: 1.4rem;
+      color: var(--text-primary);
+      margin: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .guide-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem 0;
+      padding: 1rem;
+      background: var(--message-bg);
+      border-left: 4px solid var(--orb-2);
+      border-radius: 8px;
+    }
+
+    .guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .guide-step {
+      padding: 1rem;
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .guide-step:hover {
+      background: linear-gradient(135deg, rgba(155, 137, 212, 0.08) 0%, rgba(123, 158, 240, 0.05) 100%);
+      border-color: var(--orb-2);
+    }
+
+    .guide-step-number {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 32px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-right: 0.75rem;
+    }
+
+    .guide-step-text {
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .guide-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+
+    .start-grounding-btn {
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, var(--orb-1) 0%, var(--orb-2) 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .start-grounding-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(155, 137, 212, 0.3);
+    }
+
+    .start-grounding-btn:active {
+      transform: translateY(0);
+    }
+
+    .guide-message {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+      margin: 0;
+    }
+
+
+    .tech-description {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* ========== GROUNDING GUIDE ========== */
+    .grounding-guide {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .guide-close {
+      margin-bottom: 1rem;
+    }
+
+    .guide-close button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .guide-close button:hover {
+      color: var(--text-primary);
+      transform: translateX(-3px);
+    }
+
+    .guide-title {
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      margin: 0 0 1rem 0;
+    }
+
+    .guide-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .guide-step {
+      padding: 1rem;
+      background: var(--input-bg);
+      border-left: 4px solid var(--orb-1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .guide-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .start-grounding-btn {
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, var(--orb-1) 0%, var(--orb-3) 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .start-grounding-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(155, 137, 212, 0.3);
+    }
+
+    .guide-message {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+      margin: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Chat Container - SCROLLABLE MIDDLE SECTION */
+    .chat-container {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 2rem;
+      z-index: 10;
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .chat-container.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Messages */
+    .message {
+      margin-bottom: 1.5rem;
+      animation: messageAppear 0.5s ease-out;
+    }
+
+    @keyframes messageAppear {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .message-vera {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .vera-avatar {
+      width: 42px;
+      height: 42px;
+      background: radial-gradient(circle at 40% 40%, var(--orb-3) 0%, var(--orb-2) 50%, var(--orb-1) 100%);
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba(155, 137, 212, 0.3);
+      animation: avatarPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes avatarPulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(155, 137, 212, 0.3);
+      }
+      50% { 
+        transform: scale(1.05);
+        box-shadow: 0 4px 20px rgba(155, 137, 212, 0.5);
+      }
+    }
+
+    .message-bubble {
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 1.2rem 1.5rem;
+      max-width: 70%;
+      color: var(--text-primary);
+      line-height: 1.7;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      position: relative;
+      backdrop-filter: blur(10px);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Beautiful warm gradient for VERA's messages */
+    .message-vera .message-bubble {
+      background: linear-gradient(135deg, 
+        rgba(177, 156, 217, 0.15) 0%, 
+        rgba(155, 143, 212, 0.12) 50%,
+        rgba(123, 158, 240, 0.1) 100%);
+      border: 1px solid rgba(155, 137, 212, 0.3);
+      box-shadow: 
+        0 4px 20px rgba(155, 137, 212, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Shimmer on VERA's messages */
+    .message-vera .message-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .message-vera .message-bubble:hover::before {
+      left: 100%;
+    }
+
+    .message-user {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .message-user .message-bubble {
+      background: linear-gradient(135deg, 
+        rgba(123, 158, 240, 0.2) 0%, 
+        rgba(100, 181, 246, 0.15) 100%);
+      border: 1px solid rgba(123, 158, 240, 0.3);
+      box-shadow: 
+        0 4px 20px rgba(123, 158, 240, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .typing-indicator.active {
+      display: flex;
+      animation: messageAppear 0.5s ease-out;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 0.4rem;
+      padding: 1.2rem 1.5rem;
+      background: linear-gradient(135deg, 
+        rgba(177, 156, 217, 0.15) 0%, 
+        rgba(155, 143, 212, 0.12) 50%,
+        rgba(123, 158, 240, 0.1) 100%);
+      border: 1px solid rgba(155, 137, 212, 0.3);
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+      box-shadow: 
+        0 4px 20px rgba(155, 137, 212, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Dark theme typing dots */
+    [data-theme="dark"] .typing-dots {
+      background: linear-gradient(135deg, 
+        rgba(155, 89, 182, 0.25) 0%, 
+        rgba(177, 156, 217, 0.2) 50%,
+        rgba(100, 181, 246, 0.15) 100%);
+      border: 1px solid rgba(155, 89, 182, 0.4);
+      box-shadow: 
+        0 4px 20px rgba(155, 89, 182, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Deep dark theme typing dots */
+    [data-theme="deep"] .typing-dots {
+      background: linear-gradient(135deg, 
+        rgba(107, 91, 140, 0.3) 0%, 
+        rgba(123, 107, 156, 0.25) 50%,
+        rgba(91, 123, 166, 0.2) 100%);
+      border: 1px solid rgba(107, 91, 140, 0.5);
+      box-shadow: 
+        0 4px 20px rgba(107, 91, 140, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--orb-1);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+      box-shadow: 0 0 8px rgba(155, 137, 212, 0.3);
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 0 8px rgba(155, 137, 212, 0.3);
+      }
+      30% {
+        transform: translateY(-12px);
+        box-shadow: 0 4px 12px rgba(155, 137, 212, 0.5);
+      }
+    }
+
+    /* Input Container */
+    /* Input Container - FROZEN AT BOTTOM */
+    .input-container {
+      padding: 1.5rem;
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+      border-top: 1px solid var(--border-color);
+      position: relative;
+      transition: all 0.3s;
+      flex-shrink: 0;
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+      max-height: 300px;
+      overflow: hidden;
+    }
+
+    .input-container.active {
+      display: flex;
+    }
+
+    /* Subtle glow when input is focused */
+    .input-container.focused {
+      background: var(--container-bg);
+      box-shadow: 0 -5px 30px rgba(155, 137, 212, 0.1);
+    }
+
+    .input-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .message-input {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 25px;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text-primary);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+      position: relative;
+      resize: none;
+      min-height: 44px;
+      max-height: 150px;
+    }
+
+    .message-input::placeholder {
+      color: var(--text-soft);
+      transition: all 0.3s;
+    }
+
+    .message-input:focus {
+      border-color: var(--orb-1);
+      box-shadow: 
+        0 0 0 3px rgba(155, 137, 212, 0.15),
+        0 8px 24px rgba(155, 137, 212, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .message-input:focus::placeholder {
+      transform: translateX(5px);
+      opacity: 0.7;
+    }
+
+    .send-button {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(155, 137, 212, 0.3);
+      flex-shrink: 0;
+      min-height: 52px;
+    }
+
+    /* Shimmer effect on send button */
+    .send-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: buttonShimmer 3s linear infinite;
+    }
+
+    @keyframes buttonShimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    /* Ripple effect on hover */
+    .send-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .send-button:hover::after {
+      width: 120px;
+      height: 120px;
+    }
+
+    .send-button:hover:not(:disabled) {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 
+        0 8px 30px rgba(155, 137, 212, 0.5),
+        0 0 40px rgba(155, 137, 212, 0.3);
+    }
+
+    .send-button:active:not(:disabled) {
+      transform: scale(0.95) rotate(5deg);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      animation: none;
+    }
+
+    .send-button:disabled::before,
+    .send-button:disabled::after {
+      display: none;
+    }
+
+    /* Breathing pulse when ready */
+    .send-button:not(:disabled) {
+      animation: sendButtonPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes sendButtonPulse {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(155, 137, 212, 0.3);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(155, 137, 212, 0.5);
+      }
+    }
+
+    .send-button svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--orb-1);
+    }
+
+    /* Breathing Exercise Modal */
+    .breathing-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .breathing-modal.active {
+      display: flex;
+    }
+
+    .breathing-content {
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .breathing-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--message-bg);
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .breathing-close:hover {
+      background: var(--border-color);
+      transform: rotate(90deg);
+    }
+
+    .breathing-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .breathing-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .breathing-circle {
+      width: 200px;
+      height: 200px;
+      margin: 2rem auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, var(--orb-3) 0%, transparent 70%);
+      position: relative;
+    }
+
+    .breathing-orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--orb-3) 0%, var(--orb-2) 50%, var(--orb-1) 100%);
+      box-shadow: 0 0 60px rgba(155, 137, 212, 0.6);
+      transition: all 0.3s ease;
+    }
+
+    .breathing-orb.breathe-in {
+      animation: breatheIn 4s ease-in-out;
+    }
+
+    .breathing-orb.breathe-out {
+      animation: breatheOut 6s ease-in-out;
+    }
+
+    @keyframes breatheIn {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 40px rgba(155, 137, 212, 0.5);
+      }
+      100% {
+        transform: scale(1.5);
+        box-shadow: 0 0 80px rgba(155, 137, 212, 0.9);
+      }
+    }
+
+    @keyframes breatheOut {
+      0% {
+        transform: scale(1.5);
+        box-shadow: 0 0 80px rgba(155, 137, 212, 0.9);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 40px rgba(155, 137, 212, 0.5);
+      }
+    }
+
+    .breathing-instruction {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      min-height: 2rem;
+    }
+
+    .breathing-count {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .breathing-start-btn {
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(155, 137, 212, 0.4);
+    }
+
+    .breathing-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(155, 137, 212, 0.6);
+    }
+
+    .breathing-start-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Icon Orbs - replace emojis with neural/orb visuals */
+    .panel-icon-orb,
+    .history-modal-orb,
+    .tech-duration-orb {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+      background: radial-gradient(circle at 35% 35%, var(--orb-3) 0%, var(--orb-2) 50%, var(--orb-1) 100%);
+      box-shadow: 0 0 12px rgba(155, 137, 212, 0.5), inset -2px -2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .history-modal-orb {
+      margin-right: 10px;
+    }
+
+    /* Signup Modal */
+    .signup-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      display: none;
+    }
+
+    .signup-modal h2 {
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .signup-modal p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .signup-modal input {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .signup-modal input:focus {
+      border-color: var(--orb-1);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(155, 137, 212, 0.15);
+    }
+
+    .signup-modal button {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .signup-modal button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(155, 137, 212, 0.4);
+    }
+
+    /* Email Collection Modal (Guest -> Email) */
+    @media (max-width: 768px) {
+      .signup-modal {
+        max-width: 90vw;
+        padding: 1.5rem;
+        width: 90vw;
+      }
+
+      .signup-modal h2 {
+        font-size: 1.4rem;
+      }
+
+      .signup-modal p {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .signup-modal input {
+        padding: 0.75rem;
+        font-size: 1rem;
+        min-height: 44px;
+      }
+
+      .signup-modal button {
+        padding: 0.75rem;
+        min-height: 44px;
+      }
+    }
+
+    /* Conversation History Modal */
+    .history-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .history-modal.active {
+      display: flex;
+    }
+
+    .history-content {
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .history-header h2 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .history-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--message-bg);
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .history-close:hover {
+      background: var(--border-color);
+      transform: rotate(90deg);
+    }
+
+    .history-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .history-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .history-item {
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .history-item:hover {
+      background: var(--quick-button-hover);
+      transform: translateX(4px);
+      border-color: var(--orb-1);
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .history-item-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 1rem;
+      flex: 1;
+    }
+
+    .history-item-date {
+      color: var(--text-soft);
+      font-size: 0.85rem;
+      white-space: nowrap;
+      margin-left: 1rem;
+    }
+
+    .history-item-preview {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .history-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .history-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .history-item-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .history-item-btn:hover {
+      background: var(--quick-button-hover);
+      border-color: var(--orb-1);
+    }
+
+    .history-item-btn.delete {
+      color: #ff4444;
+      border-color: rgba(255, 68, 68, 0.3);
+    }
+
+    .history-item-btn.delete:hover {
+      background: rgba(255, 68, 68, 0.1);
+      border-color: #ff4444;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-secondary);
+    }
+
+    .history-empty h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    /* Date grouping styles */
+    .history-date-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .history-date-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Enhanced item content */
+    .history-item-content {
+      flex: 1;
+    }
+
+    .history-item-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .history-item-preview {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-bottom: 0.5rem;
+    }
+
+    .history-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    /* Item with flex layout */
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .history-item:hover {
+      background: var(--quick-button-hover);
+      transform: translateX(4px);
+      border-color: var(--orb-1);
+    }
+
+    /* Action buttons */
+    .history-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .history-item-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .history-item-btn:hover {
+      background: var(--quick-button-hover);
+      border-color: var(--orb-1);
+      transform: scale(1.1);
+    }
+
+    .history-item-btn.load-btn {
+      color: var(--orb-1);
+    }
+
+    .history-item-btn.delete-btn {
+      color: #ff4444;
+    }
+
+    /* Footer with delete all button */
+    .history-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+    }
+
+    .history-delete-all-btn {
+      padding: 0.6rem 1.5rem;
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      border-radius: 8px;
+      color: #ff4444;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .history-delete-all-btn:hover {
+      background: rgba(255, 68, 68, 0.2);
+      border-color: #ff4444;
+      transform: translateY(-2px);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .chat-header {
+        padding: 0.75rem 1rem;
+        padding-top: max(0.75rem, env(safe-area-inset-top));
+      }
+
+      .menu-toggle {
+        display: flex;
+        order: -1;
+        z-index: 2001;
+        width: 44px;
+        height: 44px;
+        padding: 6px;
+        pointer-events: auto !important;
+        touch-action: manipulation;
+        border: 1px solid var(--border-color);
+      }
+
+      .sound-toggle {
+        width: 36px;
+        height: 36px;
+      }
+
+      .sound-toggle-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+      }
+
+      .sound-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .vera-presence-indicator {
+        width: 40px;
+        height: 40px;
+      }
+
+      .vera-title h1 {
+        font-size: 1.2rem;
+        letter-spacing: 0.1em;
+      }
+
+      .status-text {
+        font-size: 0.75rem;
+      }
+
+      .hamburger-dropdown {
+        width: auto;
+        max-width: calc(100vw - 2rem);
+        left: 1rem;
+        right: 1rem;
+        z-index: 1000;
+      }
+
+      .dropdown-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+      }
+
+      .vera-orb-large {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1.5rem;
+      }
+
+      .welcome-container {
+        padding: 1rem;
+      }
+
+      .welcome-text h2 {
+        font-size: 1.5rem;
+      }
+
+      .welcome-text p {
+        font-size: 1rem;
+        padding: 0 1rem;
+      }
+
+      .quick-starts {
+        gap: 0.5rem;
+        padding: 0 1rem;
+      }
+
+      .quick-button {
+        min-height: 44px;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+        width: 100%;
+      }
+
+      .message-bubble {
+        max-width: 85%;
+      }
+
+      .chat-container {
+        padding: 1rem;
+      }
+
+      .input-container {
+        padding: 1rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      }
+
+      .input-wrapper {
+        gap: 0.75rem;
+      }
+
+      .message-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+      }
+
+      .send-button {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        min-height: 52px;
+      }
+
+      .breathing-start-btn {
+        min-height: 44px;
+        padding: 0.75rem 2rem;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .vera-orb-large {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+
+      .welcome-container {
+        padding: 0.75rem;
+      }
+
+      .vera-title h1 {
+        font-size: 1rem;
+      }
+
+      .menu-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        gap: 3px;
+      }
+
+      .menu-line {
+        width: 20px;
+        height: 1.5px;
+      }
+
+      .welcome-text h2 {
+        font-size: 1.3rem;
+      }
+
+      .welcome-text p {
+        font-size: 0.9rem;
+        padding: 0 0.5rem;
+      }
+
+      .quick-button {
+        min-height: 44px;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .chat-container {
+        padding: 0.75rem;
+      }
+
+      .input-container {
+        padding: 0.75rem;
+      }
+
+      .message-input {
+        padding: 0.6rem 0.75rem;
+      }
+
+      .send-button {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+      }
+
+      .dropdown-item {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .signup-modal {
+        max-width: 95vw;
+        padding: 1rem;
+      }
+
+      .signup-modal h2 {
+        font-size: 1.2rem;
+      }
+
+      .signup-modal p {
+        font-size: 0.9rem;
+      }
+
+      .signup-modal input {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+
+      .signup-modal button {
+        padding: 0.6rem;
+      }
+    }
+
+    /* === CRITICAL MOBILE FREEZE/HOLD LAYOUT === */
+    /* Ensures header, footer stay frozen and only middle scrolls */
+    @supports (padding: max(0px)) {
+      .input-container {
+        padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+      }
+    }
+
+    /* Safari + Chrome Mobile: Ensure proper flexbox layout */
+    @media (max-height: 700px) or (hover: none) {
+      body, html {
+        height: 100%;
+        width: 100%;
+        -webkit-user-select: none;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .chat-header {
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+
+      .trial-banner {
+        flex-shrink: 0;
+      }
+
+      .welcome-container {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+        min-height: 0;
+      }
+
+      .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+        min-height: 0;
+      }
+
+      .input-container {
+        flex-shrink: 0;
+        overflow: hidden;
+        max-height: 300px;
+      }
+    }
+
+    /* iOS Safari specific: Prevent scroll bounce */
+    @supports (-webkit-touch-callout: none) {
+      html, body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .chat-header {
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+
+      .trial-banner {
+        flex-shrink: 0;
+      }
+
+      .welcome-container,
+      .chat-container {
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+      }
+
+      .input-container {
+        flex-shrink: 0;
+        overflow: hidden;
+        max-height: 300px;
+      }
+    }
+
+    /* Upgrade Modal */
+    .upgrade-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .upgrade-modal.active {
+      display: flex;
+    }
+
+    .upgrade-modal.hidden {
+      display: none;
+    }
+
+    .upgrade-modal-content {
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .upgrade-modal-header {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .upgrade-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--message-bg);
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .upgrade-modal-close:hover {
+      background: var(--border-color);
+      transform: rotate(90deg);
+    }
+
+    .upgrade-modal-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .upgrade-orb-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, 
+        rgba(155, 89, 182, 0.5) 0%, 
+        rgba(100, 181, 246, 0.3) 50%,
+        transparent 90%);
+      box-shadow: 0 0 60px rgba(155, 89, 182, 0.4);
+      margin-bottom: 1.5rem;
+      animation: orbBreathing 6s ease-in-out infinite;
+    }
+
+    #upgradeTitle {
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    #upgradeMessage {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .upgrade-benefits {
+      width: 100%;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .benefit-check {
+      color: var(--orb-1);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .upgrade-pricing {
+      background: var(--message-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--orb-1);
+    }
+
+    .period {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .cancel-text {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .upgrade-button {
+      width: 100%;
+      padding: 1.2rem;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, var(--orb-1), var(--orb-3));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(155, 89, 182, 0.3);
+    }
+
+    .upgrade-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(155, 89, 182, 0.4);
+    }
+
+    .upgrade-button:active {
+      transform: translateY(0);
+    }
+
+    .upgrade-button-secondary {
+      width: 100%;
+      padding: 1.2rem;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .upgrade-button-secondary:hover {
+      background: var(--message-bg);
+      border-color: var(--orb-1);
+      color: var(--orb-1);
+    }
+
+    @media (max-width: 768px) {
+      .upgrade-modal-content {
+        padding: 1.5rem;
+        max-width: 90%;
+      }
+
+      #upgradeTitle {
+        font-size: 1.5rem;
+      }
+
+      .price {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <!-- Living Background -->
+  <div class="living-background">
+    <div class="breath-circle" style="top: 10%; left: 5%;"></div>
+    <div class="breath-circle" style="top: 50%; right: 10%; animation-delay: 3s;"></div>
+    <div class="breath-circle" style="bottom: 10%; left: 40%; animation-delay: 6s;"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="chat-header">
+      <div class="vera-identity">
+        <button class="menu-toggle" onclick="toggleMenu()" id="menuToggle">
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+          <span class="menu-line"></span>
+        </button>
+
+        <!-- Hamburger Dropdown -->
+        <div class="hamburger-dropdown" id="hamburgerDropdown">
+          <div class="dropdown-control-item">
+            <div class="dropdown-control-label">
+              <span class="dropdown-orb dropdown-orb-theme" aria-hidden="true"></span>
+              <span class="dropdown-control-name">Theme</span>
+            </div>
+            <div class="dropdown-theme-selector">
+              <button class="dropdown-theme-btn light-btn" onclick="setTheme('light')" title="Light"><span class="dropdown-orb dropdown-orb-light" aria-hidden="true"></span>Light</button>
+              <button class="dropdown-theme-btn dark-btn" onclick="setTheme('dark')" title="Dark"><span class="dropdown-orb dropdown-orb-dark" aria-hidden="true"></span>Dark</button>
+              <button class="dropdown-theme-btn deep-btn" onclick="setTheme('deep')" title="Deep Dark"><span class="dropdown-orb dropdown-orb-deep" aria-hidden="true"></span>Deep</button>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="startNewChat()">
+            <span><span class="dropdown-orb dropdown-orb-new" aria-hidden="true"></span>New Chat</span>
+          </div>
+          <div class="dropdown-item" onclick="openBreathingExercise()">
+            <span><span class="dropdown-orb dropdown-orb-breathe" aria-hidden="true"></span>Breathe with VERA</span>
+          </div>
+          <div class="dropdown-item" onclick="openConversationHistory()">
+            <span><span class="dropdown-orb dropdown-orb-history" aria-hidden="true"></span>Conversation History</span>
+          </div>
+          <div class="dropdown-item" onclick="manageSubscription()">
+            <span><span class="dropdown-orb dropdown-orb-subscription" aria-hidden="true"></span>Manage Subscription</span>
+          </div>
+          <div class="dropdown-item" onclick="goToSettings()">
+            <span><span class="dropdown-orb dropdown-orb-settings" aria-hidden="true"></span>Settings</span>
+          </div>
+          <div class="dropdown-item" onclick="logout()">
+            <span><span class="dropdown-orb dropdown-orb-logout" aria-hidden="true"></span>Logout</span>
+          </div>
+        </div>                <div class="vera-presence-indicator"></div>
+        <div class="vera-title">
+          <h1>VERA</h1>
+          <span class="status-text" id="statusText">I'm here with you</span>
+        </div>
+      </div>
+            
+      <div class="header-controls">
+        <!-- Voice Toggle Button -->
+        <button id="soundToggle" class="sound-toggle-btn" onclick="toggleSound()" title="Toggle voice responses">
+          <span class="sound-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Trial Banner -->
+    <div class="trial-banner hidden" id="trialBanner">
+      <div class="trial-banner-text" id="trialBannerText">
+        48-Hour Trial: <span id="trialTimeRemaining">48 hours</span> remaining
+      </div>
+      <div class="trial-progress">
+        <div class="trial-progress-bar" id="trialProgressBar">
+          <div class="trial-progress-fill" id="trialProgressFill" style="width: 0%"></div>
+        </div>
+        <div class="trial-days" id="trialDaysRemaining">48h left</div>
+      </div>
+    </div>
+
+    <!-- Welcome Container -->
+    <div class="welcome-container" id="welcomeContainer">
+      <div class="vera-orb-large"></div>
+      <div class="welcome-text">
+        <h2 id="welcomeTitle">I'm VERA. I'm here for you.</h2>
+        <p>This is a space where your nervous system is understood—where what you're feeling matters. No rush, no judgment. Just us.</p>
+      </div>
+            
+      <div class="quick-starts">
+        <button class="quick-button" onclick="quickStart('I don\'t know where to start')">I don't know where to start</button>
+        <button class="quick-button" onclick="quickStart('My chest is tight and I can\'t breathe')">My chest is tight</button>
+        <button class="quick-button" onclick="quickStart('Everything feels heavy today')">Everything feels heavy</button>
+      </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+      <!-- Typing Indicator (moved inside chat container) -->
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="vera-avatar"></div>
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-container">
+      <div class="input-wrapper">
+        <textarea 
+          id="messageInput" 
+          class="message-input" 
+          placeholder="What's present in your body right now..."
+          rows="1"
+        ></textarea>
+        <button class="send-button" onclick="sendMessage()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Breathing Exercise Modal -->
+    <div class="breathing-modal" id="breathingModal">
+      <div class="breathing-content">
+        <button class="breathing-close" onclick="closeBreathingExercise()">✕</button>
+        <h2 class="breathing-title">Breathe with VERA</h2>
+        <p class="breathing-subtitle">Let's ground together</p>
+                
+        <div class="breathing-circle" id="breathingCircle">
+          <div class="breathing-orb"></div>
+        </div>
+                
+        <p class="breathing-instruction" id="breathingInstruction">Breathe in...</p>
+        <p class="breathing-count" id="breathingCount">Round 1 of 5</p>
+                
+        <button class="breathing-start-btn" id="breathingStartBtn" onclick="startBreathing()">Start</button>
+      </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="signup-modal" id="signupModal">
+      <h2>I'm not going anywhere</h2>
+      <p>I'll be right here.</p>
+      <form onsubmit="handleSignup(event)">
+        <input type="text" placeholder="First Name" required>
+        <input type="text" placeholder="Last Name" required>
+        <input type="email" placeholder="Email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+
+    <!-- Conversation History Modal -->
+    <div class="history-modal" id="historyModal">
+      <div class="history-content">
+        <div class="history-header">
+          <h2><span class="history-modal-orb"></span>Your Conversations</h2>
+          <button class="history-close" onclick="closeConversationHistory()">✕</button>
+        </div>
+                
+        <div class="history-list" id="historyList">
+          <div class="history-loading">
+            <div class="breathing-orb" style="width: 60px; height: 60px;"></div>
+            <p>Loading your conversations...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upgrade Modal -->
+    <div class="upgrade-modal hidden" id="upgradeModal">
+      <div class="upgrade-modal-content">
+        <div class="upgrade-modal-header">
+          <button class="upgrade-modal-close" onclick="closeUpgradeModal()">✕</button>
+        </div>
+                
+        <div class="upgrade-modal-body">
+          <div class="upgrade-orb-icon"></div>
+          <h2 id="upgradeTitle">Continue Your Journey</h2>
+          <p id="upgradeMessage">Your 48-hour trial is ending soon. Upgrade to keep talking with VERA.</p>
+                    
+          <div class="upgrade-benefits">
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <span>Unlimited conversations</span>
+            </div>
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <span>VERA remembers you</span>
+            </div>
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <span>Pattern tracking</span>
+            </div>
+          </div>
+                    
+          <div class="upgrade-pricing">
+            <span class="price">$12</span>
+            <span class="period">/month</span>
+            <span class="cancel-text">Cancel anytime</span>
+          </div>
+                    
+          <button class="upgrade-button" onclick="goToCheckout()">
+            Upgrade Now
+          </button>
+                    
+          <button class="upgrade-button-secondary" onclick="closeUpgradeModal()">
+            Maybe Later
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // GLOBAL STATE
+    // ============================================
+        
+    let isAuthenticated = false;
+    let isSubscriber = false;
+    let userEmail = null;
+    let userName = 'friend';
+    let anonId = '';
+    let isSending = false;
+        
+    // Sound settings
+    let soundEnabled = true;
+    let typingAudio = null;
+    let currentAudio = null; // Track current TTS playback to stop when new message arrives
+        
+    // Track guest messages
+    let guestMessageCount = parseInt(localStorage.getItem('veraGuestMessageCount') || '0');
+        
+    const messageInput = document.getElementById('messageInput');
+    const chatContainer = document.getElementById('chatContainer');
+    const welcomeContainer = document.getElementById('welcomeContainer');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const inputContainer = document.querySelector('.input-container');
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+        
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+        
+    // Initialize typing sound audio
+    function initializeTypingSound() {
+      // Base64 encoded typing sound (80ms soft keystroke)
+      const base64Audio = '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';
+            
+      try {
+        // Create audio element
+        const audio = new Audio();
+        audio.src = 'data:audio/wav;base64,' + base64Audio;
+        audio.volume = 0.15; // Very quiet (15% volume)
+        typingAudio = audio;
+        console.log('✅ Typing sound loaded');
+      } catch (error) {
+        console.error('Failed to load typing sound:', error);
+        typingAudio = null;
+      }
+    }
+        
+    // Play typing sound
+    function playTypingSound() {
+      if (!soundEnabled || !typingAudio) return;
+            
+      try {
+        // Clone and play to avoid cutting off previous instance
+        const audio = typingAudio.cloneNode();
+        audio.volume = 0.15;
+        audio.play().catch(err => {
+          // Silently fail - some contexts don't allow autoplay
+          console.debug('Audio play prevented:', err.message);
+        });
+      } catch (error) {
+        console.debug('Failed to play typing sound:', error);
+      }
+    }
+        
+    // Toggle sound on/off
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('veraSoundEnabled', soundEnabled ? '1' : '0');
+            
+      const toggle = document.getElementById('soundToggle');
+      if (soundEnabled) {
+        toggle.classList.remove('disabled');
+        toggle.setAttribute('title', 'Sound on - Click to mute');
+      } else {
+        toggle.classList.add('disabled');
+        toggle.setAttribute('title', 'Sound muted - Click to unmute');
+      }
+            
+      console.log('🔊 Sound ' + (soundEnabled ? 'enabled' : 'disabled'));
+    }
+        
+    async function safeJsonFetch(url, options = {}) {
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          let errorData;
+          try {
+            errorData = JSON.parse(errorText);
+          } catch {
+            errorData = { error: errorText || `HTTP ${response.status}` };
+          }
+          throw new Error(errorData.error || `Request failed with status ${response.status}`);
+        }
+
+        const text = await response.text();
+        if (!text || text.trim().length === 0) {
+          return { success: true };
+        }
+
+        try {
+          return JSON.parse(text);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          throw new Error('Invalid JSON response from server');
+        }
+      } catch (error) {
+        console.error(`Fetch error for ${url}:`, error);
+        throw error;
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function getOrCreateAnonId() {
+      // Use localStorage instead of sessionStorage - on mobile, sessionStorage is cleared
+      // when app goes to background or tab closes, causing message save failures
+      let id = localStorage.getItem('vera_anon_id');
+      if (!id) {
+        id = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('vera_anon_id', id);
+        console.log('🆔 Generated new anonId for guest:', id);
+      } else {
+        console.log('🆔 Loaded existing anonId:', id);
+      }
+      return id;
+    }
+
+    function adjustTextareaHeight() {
+      messageInput.style.height = 'auto';
+      const newHeight = Math.min(messageInput.scrollHeight, 150);
+      messageInput.style.height = newHeight + 'px';
+    }
+
+    function addMessage(role, content) {
+      if (!content || typeof content !== 'string') {
+        console.error('Invalid message content:', content);
+        return;
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message message-${role}`;
+            
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = content;
+            
+      if (role === 'vera') {
+        const avatar = document.createElement('div');
+        avatar.className = 'vera-avatar';
+        messageDiv.appendChild(avatar);
+        
+        // Auto-play TTS if sound is enabled
+        if (soundEnabled && content && content.trim().length > 0) {
+          setTimeout(() => {
+            playTTSForMessage(content);
+          }, 300);
+        }
+      }
+            
+      messageDiv.appendChild(bubble);
+            
+      // Hide welcome if present
+      if (welcomeContainer.style.display !== 'none') {
+        welcomeContainer.style.display = 'none';
+        chatContainer.classList.add('active');
+      }
+            
+      // Only insert before typing indicator if it exists and is in the container
+if (typingIndicator && chatContainer.contains(typingIndicator)) {
+  chatContainer.insertBefore(messageDiv, typingIndicator);
+} else {
+  chatContainer.appendChild(messageDiv);
+}
+            
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 100);
+
+      return messageDiv;
+    }
+
+    // Helper function to play TTS for a message
+    async function playTTSForMessage(text) {
+      try {
+        // Stop any currently playing audio
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text })
+        });
+        
+        if (response.ok) {
+          const audioBlob = await response.blob();
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          currentAudio = audio; // Track current audio
+          audio.play().catch(err => {
+            console.debug('Audio playback prevented:', err.message);
+          });
+        }
+      } catch (error) {
+        console.debug('TTS playback failed:', error.message);
+      }
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+        
+    // ✅ NEW: Load trial info immediately on page load (not just after first message)
+    async function loadTrialInfoOnPageLoad() {
+      try {
+        const response = await safeJsonFetch(`/api/subscription-status?email=${encodeURIComponent(userEmail)}`);
+        if (response && response.subscription) {
+          const sub = response.subscription;
+          console.log('📅 Trial info loaded on page load:', {
+            isOnTrial: sub.isOnTrial,
+            hoursRemaining: sub.hoursRemaining,
+            trialDay: sub.trialDay
+          });
+
+          // Show trial banner if user is on trial
+          if (sub.isOnTrial && sub.trialDay) {
+            updateTrialBanner(sub.trialDay);
+          }
+        }
+      } catch (error) {
+        console.warn('Could not load trial info on page load:', error);
+        // This is not critical, trial info will load after first message
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🌟 VERA initializing...');
+
+      // Initialize panels - welcome container starts active
+      document.getElementById('welcomeContainer').classList.add('active');
+
+      // Capture community pricing parameters from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const communityPriceId = urlParams.get('priceId');
+      const communitySource = urlParams.get('source');
+            
+      if (communityPriceId) {
+        console.log('🎁 Community pricing detected:', communityPriceId);
+        sessionStorage.setItem('communityPriceId', communityPriceId);
+        if (communitySource) {
+          sessionStorage.setItem('communitySource', communitySource);
+        }
+        // Clean URL to avoid passing params around
+        window.history.replaceState({}, document.title, '/chat.html');
+      }
+
+      // Initialize typing sound
+      initializeTypingSound();
+            
+      // Load sound preference
+      soundEnabled = localStorage.getItem('veraSoundEnabled') !== '0'; // Default to enabled
+      const toggle = document.getElementById('soundToggle');
+      if (!soundEnabled) {
+        toggle.classList.add('disabled');
+      }
+
+      // Get anonymous ID
+      anonId = getOrCreateAnonId();
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('veraTheme') || 'light';
+      setTheme(savedTheme);
+
+      // Check authentication (pass email if we have one)
+      try {
+        const pendingSignup = localStorage.getItem('vera_pending_signup');
+        const pendingEmail = pendingSignup ? (JSON.parse(pendingSignup).email || '') : '';
+        const storedGuestEmail = localStorage.getItem('veraGuestEmail') || '';
+        const emailForCheck = storedGuestEmail || userEmail || pendingEmail || '';
+        const authCheckUrl = emailForCheck ? `/api/auth/check?email=${encodeURIComponent(emailForCheck)}` : '/api/auth/check';
+        const authData = await safeJsonFetch(authCheckUrl);
+        if (authData && authData.authenticated) {
+          isAuthenticated = true;
+          userEmail = authData.email || null;
+          userName = userEmail ? userEmail.split('@')[0] : 'friend';
+          isSubscriber = authData.isSubscriber || false;
+          console.log('✅ Authenticated as:', userName);
+                    
+          // Clear guest flag for authenticated users
+          localStorage.removeItem('veraIsGuest');
+          localStorage.removeItem('veraGuestMessageCount');
+
+          // ✅ LOAD TRIAL INFO ON PAGE LOAD
+          await loadTrialInfoOnPageLoad();
+        } else {
+          // User is NOT authenticated - mark as guest
+          localStorage.setItem('veraIsGuest', 'true');
+          guestMessageCount = parseInt(localStorage.getItem('veraGuestMessageCount') || '0');
+          console.log('👤 Guest mode enabled - message count tracking started:', guestMessageCount);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        // On auth check failure, assume guest mode
+        localStorage.setItem('veraIsGuest', 'true');
+        guestMessageCount = parseInt(localStorage.getItem('veraGuestMessageCount') || '0');
+        console.log('👤 Guest mode enabled (auth check failed) - message count tracking started:', guestMessageCount);
+      }
+
+      // Event listeners
+      messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      messageInput.addEventListener('input', adjustTextareaHeight);
+
+      messageInput.addEventListener('focus', () => {
+        inputContainer.classList.add('focused');
+      });
+
+      messageInput.addEventListener('blur', () => {
+        inputContainer.classList.remove('focused');
+      });
+
+      document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('hamburgerDropdown');
+        const menuToggle = document.getElementById('menuToggle');
+        if (!dropdown.contains(e.target) && !menuToggle.contains(e.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+
+      // 📱 MOBILE FIX: Detect app background/foreground
+      // On mobile, these events help us detect connection issues and unsaved messages
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          console.log('📱 [MOBILE] App entering background - current anonId:', anonId);
+        } else {
+          console.log('📱 [MOBILE] App returning to foreground - verifying anonId:', anonId);
+          // Verify anonId is still set (sessionStorage clears on some mobile browsers)
+          const currentAnonId = getOrCreateAnonId();
+          if (currentAnonId !== anonId) {
+            console.warn('⚠️ [MOBILE] anonId changed! Old:', anonId, 'New:', currentAnonId);
+            anonId = currentAnonId;
+          }
+        }
+      });
+
+      // Update status text animation
+      updateStatusMessages();
+
+      // Check subscription status if returning from Stripe
+      await checkSubscriptionStatus();
+
+      // Load history
+      try {
+        await loadHistory();
+      } catch (err) {
+        console.error('Error loading history:', err);
+      }
+
+      console.log('VERA ready');
+    });
+
+    // ============================================
+    // CORE FUNCTIONS
+    // ============================================
+
+    // ✅ REMOVED showSignupModal() - using soft email collection flow instead
+
+    async function handleSignup(event) {
+      event.preventDefault();
+      const form = event.target;
+      const firstName = form.querySelector('input[placeholder="First Name"]').value;
+      const lastName = form.querySelector('input[placeholder="Last Name"]').value;
+      const email = form.querySelector('input[placeholder="Email"]').value;
+
+      if (!firstName || !lastName || !email) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      try {
+        // Get community pricing if available
+        const communityPriceId = sessionStorage.getItem('communityPriceId');
+        const communitySource = sessionStorage.getItem('communitySource');
+
+        // Create checkout session
+        const checkoutBody = {
+          email,
+          firstName,
+          lastName,
+          anonId,
+          returnUrl: window.location.href
+        };
+
+        // Add community pricing if available
+        if (communityPriceId) {
+          checkoutBody.priceId = communityPriceId;
+          checkoutBody.source = communitySource || 'community';
+        }
+
+        const response = await safeJsonFetch('/api/create-checkout-session', {
+          method: 'POST',
+          body: JSON.stringify(checkoutBody)
+        });
+
+        if (response.url) {
+          // Store user info for after successful subscription
+          localStorage.setItem('vera_pending_signup', JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            anonId
+          }));
+
+          // Redirect to Stripe
+          window.location.href = response.url;
+        } else {
+          throw new Error('No checkout URL received');
+        }
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert('Sorry, there was an error. Please try again.');
+      }
+    }
+
+    // Email Collection Modal Functions
+    async function checkSubscriptionStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('session_id');
+            
+      if (sessionId) {
+        try {
+          console.log('💳 Detected successful subscription, session_id:', sessionId);
+                    
+          // Update user state as subscriber
+          isSubscriber = true;
+                    
+          // Clear any guest status
+          localStorage.removeItem('veraIsGuest');
+          localStorage.removeItem('veraGuestMessageCount');
+          localStorage.removeItem('vera_pending_signup');
+                    
+          // Get user's name if available
+          const displayName = userName || 'co-regulator';
+                    
+          // Add welcome message from VERA
+          addMessage('vera', `Welcome home, ${displayName}. We're in this together now. What's present?`);
+                    
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+                    
+          console.log('✅ Subscription activated and confirmed');
+        } catch (error) {
+          console.error('Subscription verification error:', error);
+        }
+      }
+    }
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+            
+      if (!message || isSending) return;
+
+      // Check guest message count (soft flow - no hard stops)
+      if (localStorage.getItem('veraIsGuest') === 'true') {
+        guestMessageCount++;
+        localStorage.setItem('veraGuestMessageCount', guestMessageCount);
+                
+        console.log(`📊 [GUEST COUNT] Message ${guestMessageCount}`);
+                
+        // NO HARD STOPS - trial system handles access control
+      }
+
+      isSending = true;
+      const sendBtn = document.querySelector('.send-button');
+      sendBtn.disabled = true;
+      messageInput.disabled = true;
+
+      addMessage('user', message);
+      messageInput.value = '';
+      adjustTextareaHeight();
+
+      typingIndicator.classList.add('active');
+            
+      // Play typing sound when indicator appears
+      playTypingSound();
+
+      // 📱 MOBILE DEBUG: Log all identifiers
+      console.log('📱 [MOBILE DEBUG] sendMessage called with:', {
+        messageLength: message.length,
+        userEmail: userEmail,
+        anonId: anonId,
+        isAuthenticated: isAuthenticated,
+        currentConversationId: currentConversationId,
+        timestamp: new Date().toISOString()
+      });
+
+      try {
+        const requestBody = { 
+          message, 
+          email: userEmail, 
+          userName, 
+          anonId,
+          conversationId: currentConversationId,
+          guestMessageCount: localStorage.getItem('veraIsGuest') === 'true' ? guestMessageCount : null
+        };
+
+        console.log('📤 [MOBILE DEBUG] Sending API request to /api/chat:', requestBody);
+        console.log('📊 [FRONTEND SENDING] guestMessageCount:', {
+          value: requestBody.guestMessageCount,
+          type: typeof requestBody.guestMessageCount,
+          isGuest: localStorage.getItem('veraIsGuest'),
+          localStorageValue: localStorage.getItem('veraGuestMessageCount'),
+          localVar: guestMessageCount
+        });
+
+        const data = await safeJsonFetch('/api/chat', {
+          method: 'POST',
+          body: JSON.stringify(requestBody)
+        });
+
+        console.log('📥 [MOBILE DEBUG] API response received:', {
+          success: data?.success,
+          responseLength: data?.response?.length,
+          conversationId: data?.conversationId,
+          hasError: !!data?.error,
+          errorMessage: data?.error,
+          isGuestMessage4: data?.isGuestMessage4,
+          errorCode: data?.code
+        });
+
+        // ==================== ACCESS CONTROL: Check for trial expiration ====================
+        if (data?.code === 'TRIAL_EXPIRED') {
+          console.log('⛔ [TRIAL EXPIRED] User needs to upgrade');
+          typingIndicator.classList.remove('active');
+          sendBtn.disabled = false;
+          messageInput.disabled = false;
+                    
+          // Show upgrade modal
+          showUpgradeModal();
+                    
+          // Update modal message for trial expiration
+          const upgradeTitle = document.getElementById('upgradeTitle');
+          const upgradeMessage = document.getElementById('upgradeMessage');
+          if (upgradeTitle) upgradeTitle.textContent = '✨ Continue Your Journey';
+          if (upgradeMessage) upgradeMessage.textContent = 'Your 48-hour trial has ended. Upgrade to VERA Pro to continue having unlimited conversations and keep your pattern tracking.';
+                    
+          return; // Stop here - don't send message
+        }
+                
+        // 🎯 DEBUG: Log email collection flag
+        console.log('🎯 [EMAIL COLLECTION DEBUG - FRONTEND]', {
+          receivedFlag: data?.isGuestMessage4,
+          isTruthy: !!data?.isGuestMessage4,
+          typeOf: typeof data?.isGuestMessage4,
+          willShowModal: data?.isGuestMessage4 === true
+        });
+
+        if (data && data.success && data.response) {
+          // Update current conversation ID if server created a new one
+          if (data.conversationId) {
+            console.log('✅ [MOBILE DEBUG] Updated conversationId:', data.conversationId);
+            currentConversationId = data.conversationId;
+          }
+
+          const veraMsg = addMessage('vera', data.response);
+                    
+          // Add shimmer effect
+          setTimeout(() => {
+            veraMsg.querySelector('.message-bubble').classList.add('shimmer');
+          }, 100);
+
+          // Check if this is the right time to ask for email (after 30+ minutes of trial)
+          console.log('🎯 [EMAIL COLLECTION CHECK] Time-based prompt flag:', data.isGuestMessage4);
+          if (data.isGuestMessage4) {
+            console.log('✅ [EMAIL COLLECTION] Time threshold reached! Asking for email in chat...');
+            setTimeout(() => {
+              showEmailInputInChat();
+            }, 1500); // Wait 1.5 seconds for shimmer effect
+          }
+
+          // Update trial banner if user is on trial
+          if (data.subscription && data.subscription.isOnTrial && data.subscription.trialDay) {
+            updateTrialBanner(data.subscription.trialDay);
+          }
+
+          console.log('✅ [MOBILE DEBUG] Message saved successfully, veraMsg added to DOM');
+        } else {
+          throw new Error(data?.error || 'No response from VERA');
+        }
+      } catch (error) {
+        console.error('❌ [MOBILE DEBUG] Chat error:', error);
+        console.error('❌ [MOBILE DEBUG] Error details:', {
+          errorName: error.name,
+          errorMessage: error.message,
+          errorStack: error.stack
+        });
+        addMessage('vera', "I'm having trouble connecting right now. Please try again in a moment.");
+      } finally {
+        typingIndicator.classList.remove('active');
+        sendBtn.disabled = false;
+        messageInput.disabled = false;
+        messageInput.focus();
+        isSending = false;
+        console.log('✅ [MOBILE DEBUG] sendMessage completed, UI reset');
+      }
+    }
+
+    function quickStart(text) {
+      if (!text) return;
+      messageInput.value = text;
+      adjustTextareaHeight();
+      messageInput.focus();
+      setTimeout(() => sendMessage(), 100);
+    }
+
+    // Smooth in-chat email collection
+    function showEmailInputInChat() {
+      // Add VERA's request message
+      addMessage('vera', "I'd love to pick up where we left off next time. Would you share your email with me?");
+      
+      // Create container for email input
+      setTimeout(() => {
+        const emailContainer = document.createElement('div');
+        emailContainer.style.display = 'flex';
+        emailContainer.style.gap = '8px';
+        emailContainer.style.padding = '16px';
+        emailContainer.style.backgroundColor = 'rgba(155, 137, 212, 0.08)';
+        emailContainer.style.borderRadius = '12px';
+        emailContainer.style.marginTop = '12px';
+        emailContainer.style.marginBottom = '12px';
+        emailContainer.style.alignItems = 'center';
+        
+        const emailInput = document.createElement('input');
+        emailInput.type = 'email';
+        emailInput.placeholder = 'your@email.com';
+        emailInput.style.flex = '1';
+        emailInput.style.padding = '10px 14px';
+        emailInput.style.border = '1px solid rgba(155, 137, 212, 0.3)';
+        emailInput.style.borderRadius = '8px';
+        emailInput.style.background = 'rgba(255, 255, 255, 0.08)';
+        emailInput.style.color = 'var(--text-primary)';
+        emailInput.style.fontSize = '0.95rem';
+        emailInput.style.fontFamily = 'inherit';
+        emailInput.style.outline = 'none';
+        emailInput.style.transition = 'all 0.2s ease';
+        
+        emailInput.addEventListener('focus', () => {
+          emailInput.style.borderColor = 'rgba(155, 137, 212, 0.6)';
+          emailInput.style.background = 'rgba(255, 255, 255, 0.12)';
+        });
+        
+        emailInput.addEventListener('blur', () => {
+          emailInput.style.borderColor = 'rgba(155, 137, 212, 0.3)';
+          emailInput.style.background = 'rgba(255, 255, 255, 0.08)';
+        });
+        
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Save';
+        saveBtn.style.padding = '10px 20px';
+        saveBtn.style.background = 'linear-gradient(135deg, #B19CD9, #64B5F6)';
+        saveBtn.style.border = 'none';
+        saveBtn.style.borderRadius = '8px';
+        saveBtn.style.color = '#fff';
+        saveBtn.style.fontWeight = '600';
+        saveBtn.style.cursor = 'pointer';
+        saveBtn.style.fontSize = '0.9rem';
+        saveBtn.style.transition = 'all 0.3s ease';
+        saveBtn.style.whiteSpace = 'nowrap';
+        
+        saveBtn.addEventListener('mouseover', () => {
+          saveBtn.style.transform = 'translateY(-2px)';
+          saveBtn.style.boxShadow = '0 4px 12px rgba(155, 137, 212, 0.3)';
+        });
+        
+        saveBtn.addEventListener('mouseout', () => {
+          saveBtn.style.transform = 'translateY(0)';
+          saveBtn.style.boxShadow = 'none';
+        });
+        
+        const skipBtn = document.createElement('button');
+        skipBtn.textContent = 'Skip';
+        skipBtn.style.padding = '10px 20px';
+        skipBtn.style.background = 'transparent';
+        skipBtn.style.border = '1px solid rgba(155, 137, 212, 0.3)';
+        skipBtn.style.borderRadius = '8px';
+        skipBtn.style.color = 'var(--text-primary)';
+        skipBtn.style.fontWeight = '500';
+        skipBtn.style.cursor = 'pointer';
+        skipBtn.style.fontSize = '0.9rem';
+        skipBtn.style.transition = 'all 0.2s ease';
+        skipBtn.style.whiteSpace = 'nowrap';
+        
+        skipBtn.addEventListener('mouseover', () => {
+          skipBtn.style.borderColor = 'rgba(155, 137, 212, 0.6)';
+          skipBtn.style.background = 'rgba(155, 137, 212, 0.05)';
+        });
+        
+        skipBtn.addEventListener('mouseout', () => {
+          skipBtn.style.borderColor = 'rgba(155, 137, 212, 0.3)';
+          skipBtn.style.background = 'transparent';
+        });
+        
+        // Handle save
+        saveBtn.addEventListener('click', async () => {
+          const email = emailInput.value.trim();
+          if (!email || !email.includes('@')) {
+            emailInput.style.borderColor = '#ff6b6b';
+            setTimeout(() => {
+              emailInput.style.borderColor = 'rgba(155, 137, 212, 0.3)';
+            }, 2000);
+            return;
+          }
+          
+          try {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            const response = await safeJsonFetch('/api/request-magic-link', {
+              method: 'POST',
+              body: JSON.stringify({
+                email,
+                userName: localStorage.getItem('veraUserName') || 'friend'
+              })
+            });
+            
+            if (response.success) {
+              localStorage.setItem('veraGuestEmail', email);
+              localStorage.setItem('veraGuestEmailCollected', 'true');
+              
+              // Remove input container
+              emailContainer.style.opacity = '0';
+              emailContainer.style.transform = 'translateY(8px)';
+              emailContainer.style.transition = 'all 0.3s ease';
+              
+              setTimeout(() => {
+                emailContainer.remove();
+              }, 300);
+              
+              // Show confirmation
+              addMessage('vera', `Perfect! I've sent a magic link to ${email}. Check your email when you're ready to save our conversation. 💜`);
+            } else {
+              saveBtn.textContent = 'Save';
+              saveBtn.disabled = false;
+              alert('Error saving email. Please try again.');
+            }
+          } catch (error) {
+            console.error('Error saving email:', error);
+            saveBtn.textContent = 'Save';
+            saveBtn.disabled = false;
+            alert('Error saving email. Please try again.');
+          }
+        });
+        
+        // Handle skip
+        skipBtn.addEventListener('click', () => {
+          emailContainer.style.opacity = '0';
+          emailContainer.style.transform = 'translateY(8px)';
+          emailContainer.style.transition = 'all 0.3s ease';
+          
+          setTimeout(() => {
+            emailContainer.remove();
+          }, 300);
+        });
+        
+        emailContainer.appendChild(emailInput);
+        emailContainer.appendChild(saveBtn);
+        emailContainer.appendChild(skipBtn);
+        
+        // Insert before chat input
+        const chatInputContainer = document.querySelector('.chat-input-container');
+        if (chatInputContainer && chatInputContainer.parentNode) {
+          chatInputContainer.parentNode.insertBefore(emailContainer, chatInputContainer);
+        } else {
+          chatContainer.appendChild(emailContainer);
+        }
+        
+        emailInput.focus();
+      }, 500);
+    }
+
+    // Trial Banner Management
+    function updateTrialBanner(trialData) {
+      const banner = document.getElementById('trialBanner');
+      const bannerText = document.getElementById('trialBannerText');
+      const timeRemaining = document.getElementById('trialTimeRemaining');
+      const daysRemaining = document.getElementById('trialDaysRemaining');
+      const progressFill = document.getElementById('trialProgressFill');
+      const progressBar = document.getElementById('trialProgressBar');
+
+      // Show banner
+      banner.classList.remove('hidden');
+
+      // Calculate hours remaining
+      let hoursRemaining = 48;
+      if (trialData && typeof trialData === 'object' && trialData.hoursRemaining !== undefined) {
+        hoursRemaining = Math.max(0, Math.round(trialData.hoursRemaining));
+      } else if (typeof trialData === 'number' && trialData > 0) {
+        // Fallback for legacy numeric format
+        hoursRemaining = Math.max(0, Math.round((7 - trialData) * 24));
+      }
+
+      // Calculate progress (percentage)
+      const progressPercent = ((48 - hoursRemaining) / 48) * 100;
+      progressFill.style.width = progressPercent + '%';
+
+      // Format display text
+      let displayText = '';
+      if (hoursRemaining > 24) {
+        const daysLeft = Math.ceil(hoursRemaining / 24);
+        displayText = `${daysLeft} day${daysLeft > 1 ? 's' : ''} left`;
+      } else if (hoursRemaining > 1) {
+        displayText = `${hoursRemaining} hours left`;
+      } else if (hoursRemaining === 1) {
+        displayText = '1 hour left';
+      } else {
+        displayText = 'Trial ending soon';
+      }
+
+      timeRemaining.textContent = displayText;
+      daysRemaining.textContent = displayText;
+
+      // Update styling for critical warning (less than 12 hours)
+      if (hoursRemaining <= 12 && hoursRemaining > 0) {
+        banner.classList.add('critical');
+        progressBar.classList.add('critical');
+        daysRemaining.classList.add('critical');
+        bannerText.innerHTML = `<strong>⏰ ${displayText} on your 48-hour trial</strong>`;
+                
+        // Show upgrade modal on first critical warning
+        if (!window.upgradeModalShown) {
+          window.upgradeModalShown = true;
+          setTimeout(() => {
+            showUpgradeModal();
+          }, 1500);
+        }
+      } else if (hoursRemaining <= 0) {
+        banner.classList.add('critical');
+        progressBar.classList.add('critical');
+        daysRemaining.classList.add('critical');
+        bannerText.innerHTML = `<strong>⏰ Your trial has ended</strong>`;
+                
+        // Show upgrade modal if trial ended
+        setTimeout(() => {
+          showUpgradeModal();
+        }, 500);
+      } else {
+        banner.classList.remove('critical');
+        progressBar.classList.remove('critical');
+        daysRemaining.classList.remove('critical');
+        bannerText.innerHTML = `48-Hour Trial: <span id="trialTimeRemaining">${displayText}</span>`;
+      }
+
+      console.log(`📅 Trial banner updated: ${hoursRemaining} hours remaining`);
+    }
+
+    async function loadHistory() {
+      if (!userEmail && !anonId) {
+        console.warn('❌ [MOBILE DEBUG] Cannot load history - no userEmail or anonId');
+        return;
+      }
+
+      try {
+        const url = userEmail 
+          ? '/api/history' 
+          : `/api/history?anonId=${encodeURIComponent(anonId)}`;
+                
+        console.log('📖 [MOBILE DEBUG] Loading history from:', url, {
+          userEmail: userEmail,
+          anonId: anonId
+        });
+                
+        const data = await safeJsonFetch(url, { method: 'GET' });
+
+        console.log('📖 [MOBILE DEBUG] History loaded:', {
+          messageCount: data?.messages?.length,
+          hasMessages: Array.isArray(data?.messages),
+          firstMessageRole: data?.messages?.[0]?.role,
+          lastMessageRole: data?.messages?.[data.messages.length - 1]?.role
+        });
+
+        if (data && Array.isArray(data.messages) && data.messages.length > 0) {
+          welcomeContainer.style.display = 'none';
+          chatContainer.classList.add('active');
+                    
+          data.messages.forEach(msg => {
+            if (msg && msg.content) {
+              addMessage((msg.role === 'user') ? 'user' : 'vera', msg.content);
+            }
+          });
+                    
+          console.log(`✅ [MOBILE DEBUG] Loaded ${data.messages.length} messages from history`);
+        } else {
+          console.log('📖 [MOBILE DEBUG] No history found - showing welcome screen');
+        }
+      } catch (error) {
+        console.error('❌ [MOBILE DEBUG] Error loading history:', error);
+        console.error('❌ [MOBILE DEBUG] History error details:', {
+          errorName: error.name,
+          errorMessage: error.message
+        });
+      }
+    }
+
+    function startNewChat() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      dropdown.classList.remove('active');
+            
+      if (chatContainer.children.length > 1) {
+        const confirmed = confirm('Start a new conversation? Your previous chat is saved in history.');
+        if (!confirmed) return;
+      }
+            
+      chatContainer.innerHTML = '';
+      chatContainer.classList.remove('active');
+      welcomeContainer.style.display = 'flex';
+      messageInput.value = '';
+            
+      // Reset conversation ID to create a new one
+      currentConversationId = null;
+            
+      console.log('🆕 New chat started');
+    }
+
+    // ============================================
+    // BREATHING EXERCISE
+    // ============================================
+        
+    let breathingInterval = null;
+    let breathingRound = 0;
+    const totalRounds = 5;
+
+    function openBreathingExercise() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      dropdown.classList.remove('active');
+            
+      const modal = document.getElementById('breathingModal');
+      modal.classList.add('active');
+            
+      // Reset state
+      breathingRound = 0;
+      document.getElementById('breathingInstruction').textContent = 'Breathe in...';
+      document.getElementById('breathingCount').textContent = 'Round 1 of 5';
+      document.getElementById('breathingStartBtn').style.display = 'block';
+      document.querySelector('.breathing-orb').classList.remove('breathe-in', 'breathe-out');
+    }
+
+    function closeBreathingExercise() {
+      const modal = document.getElementById('breathingModal');
+      modal.classList.remove('active');
+            
+      if (breathingInterval) {
+        clearInterval(breathingInterval);
+        breathingInterval = null;
+      }
+    }
+
+    function startBreathing() {
+      document.getElementById('breathingStartBtn').style.display = 'none';
+      breathingRound = 0;
+      runBreathingCycle();
+    }
+
+    function runBreathingCycle() {
+      if (breathingRound >= totalRounds) {
+        // Breathing complete
+        document.getElementById('breathingInstruction').textContent = 'Beautiful. You did it.';
+        document.getElementById('breathingCount').textContent = 'Take a moment to notice how you feel';
+        document.getElementById('breathingStartBtn').textContent = 'Close';
+        document.getElementById('breathingStartBtn').style.display = 'block';
+        document.getElementById('breathingStartBtn').onclick = closeBreathingExercise;
+        return;
+      }
+
+      breathingRound++;
+      document.getElementById('breathingCount').textContent = `Round ${breathingRound} of ${totalRounds}`;
+
+      const orb = document.querySelector('.breathing-orb');
+      const instruction = document.getElementById('breathingInstruction');
+
+      // Breathe IN (4 seconds)
+      instruction.textContent = 'Breathe in...';
+      orb.classList.remove('breathe-out');
+      orb.classList.add('breathe-in');
+
+      setTimeout(() => {
+        // Hold (2 seconds)
+        instruction.textContent = 'Hold...';
+        orb.classList.remove('breathe-in');
+
+        setTimeout(() => {
+          // Breathe OUT (6 seconds)
+          instruction.textContent = 'Breathe out...';
+          orb.classList.add('breathe-out');
+
+          setTimeout(() => {
+            // Pause (2 seconds)
+            instruction.textContent = 'Rest...';
+            orb.classList.remove('breathe-out');
+
+            setTimeout(() => {
+              runBreathingCycle(); // Next round
+            }, 2000);
+          }, 6000);
+        }, 2000);
+      }, 4000);
+    }
+
+    // ============================================
+    // CONVERSATION HISTORY
+    // ============================================
+
+    let currentConversationId = null;
+
+    async function openConversationHistory() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      dropdown.classList.remove('active');
+            
+      const modal = document.getElementById('historyModal');
+      modal.classList.add('active');
+            
+      await loadConversations();
+    }
+
+    function closeConversationHistory() {
+      const modal = document.getElementById('historyModal');
+      modal.classList.remove('active');
+    }
+
+    // Upgrade Modal Functions
+    function showUpgradeModal() {
+      const modal = document.getElementById('upgradeModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('active');
+    }
+
+    function closeUpgradeModal() {
+      const modal = document.getElementById('upgradeModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('active');
+    }
+
+    function goToCheckout() {
+      if (userEmail) {
+        // Redirect to subscribe page with email
+        window.location.href = `/subscribe.html?email=${encodeURIComponent(userEmail)}`;
+      } else {
+        // For guest users, redirect to subscribe page
+        window.location.href = '/subscribe.html';
+      }
+    }
+
+    async function loadConversations() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = `
+        <div class="history-loading">
+          <div class="breathing-orb" style="width: 60px; height: 60px;"></div>
+          <p>Loading your conversations...</p>
+        </div>
+      `;
+
+      try {
+        console.log('📂 Loading conversation history...');
+        const params = new URLSearchParams();
+        if (anonId) params.append('anonId', anonId);
+
+        const data = await safeJsonFetch(`/api/conversations?${params}`);
+
+        if (!data || !data.conversations || data.conversations.length === 0) {
+          console.log('📂 No conversations found');
+          historyList.innerHTML = `
+            <div class="history-empty">
+              <h3>No conversations yet</h3>
+              <p>Start chatting with VERA to create your first conversation!</p>
+            </div>
+          `;
+          return;
+        }
+
+        console.log(`📂 Found ${data.conversations.length} conversations`);
+
+        // Group conversations by date
+        const grouped = groupConversationsByDate(data.conversations);
+                
+        let html = '';
+                
+        // Render each date group
+        for (const [dateLabel, conversations] of Object.entries(grouped)) {
+          html += `
+            <div class="history-date-group">
+              <div class="history-date-header">${dateLabel}</div>
+          `;
+                    
+          conversations.forEach(conv => {
+            const date = new Date(conv.updated_at);
+            const timeStr = date.toLocaleTimeString('en-US', { 
+              hour: 'numeric', 
+              minute: '2-digit' 
+            });
+
+            html += `
+              <div class="history-item" data-id="${conv.id}">
+                <div class="history-item-content">
+                  <div class="history-item-title">${escapeHtml(conv.title || 'Untitled Conversation')}</div>
+                  ${conv.last_message_preview ? `
+                    <div class="history-item-preview">${escapeHtml(conv.last_message_preview)}</div>
+                  ` : ''}
+                  <div class="history-item-meta">
+                    <span>${timeStr}</span> • <span>${conv.message_count || 0} messages</span>
+                  </div>
+                </div>
+                <div class="history-item-actions">
+                  <button class="history-item-btn load-btn" onclick="loadConversation(${conv.id}); event.stopPropagation();" title="Load conversation">
+                    📖
+                  </button>
+                  <button class="history-item-btn delete-btn" onclick="deleteConversation(${conv.id}); event.stopPropagation();" title="Delete conversation">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            `;
+          });
+                    
+          html += `</div>`;
+        }
+                
+        // Add delete all button at the bottom
+        html += `
+          <div class="history-footer">
+            <button class="history-delete-all-btn" onclick="deleteAllConversations()">
+              Delete All Conversations
+            </button>
+          </div>
+        `;
+                
+        historyList.innerHTML = html;
+
+      } catch (error) {
+        console.error('❌ Failed to load conversations:', error);
+        historyList.innerHTML = `
+          <div class="history-empty">
+            <h3>Unable to load conversations</h3>
+            <p>Please try again later.</p>
+          </div>
+        `;
+      }
+    }
+
+    function groupConversationsByDate(conversations) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+
+      const groups = {
+        'Today': [],
+        'Yesterday': [],
+        'This Week': [],
+        'Older': []
+      };
+
+      conversations.forEach(conv => {
+        const convDate = new Date(conv.updated_at);
+        const convDateOnly = new Date(convDate.getFullYear(), convDate.getMonth(), convDate.getDate());
+
+        if (convDateOnly.getTime() === today.getTime()) {
+          groups['Today'].push(conv);
+        } else if (convDateOnly.getTime() === yesterday.getTime()) {
+          groups['Yesterday'].push(conv);
+        } else if (convDateOnly.getTime() > weekAgo.getTime()) {
+          groups['This Week'].push(conv);
+        } else {
+          groups['Older'].push(conv);
+        }
+      });
+
+      // Filter out empty groups
+      const result = {};
+      Object.entries(groups).forEach(([key, value]) => {
+        if (value.length > 0) {
+          result[key] = value;
+        }
+      });
+
+      return result;
+    }
+
+    async function loadConversation(id) {
+      try {
+        const params = new URLSearchParams();
+        if (anonId) params.append('anonId', anonId);
+
+        const data = await safeJsonFetch(`/api/conversations/${id}?${params}`);
+
+        if (!data || !data.messages) {
+          alert('Failed to load conversation');
+          return;
+        }
+
+        // Clear current chat
+        chatContainer.innerHTML = '';
+        welcomeContainer.style.display = 'none';
+        chatContainer.classList.add('active');
+
+        // Load messages
+        data.messages.forEach(msg => {
+          addMessage(msg.role, msg.content, false);
+        });
+
+        // Set current conversation
+        currentConversationId = id;
+
+        // Close modal
+        closeConversationHistory();
+
+        // Scroll to bottom
+        setTimeout(() => {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 100);
+
+        console.log('✅ Loaded conversation:', id);
+      } catch (error) {
+        console.error('Failed to load conversation:', error);
+        alert('Failed to load conversation');
+      }
+    }
+
+    async function deleteConversation(id) {
+      if (!confirm('Delete this conversation? This cannot be undone.')) {
+        console.log('🗑️ Delete cancelled by user');
+        return;
+      }
+
+      try {
+        console.log('🗑️ Deleting conversation:', id);
+        const params = new URLSearchParams();
+        if (anonId) params.append('anonId', anonId);
+
+        await safeJsonFetch(`/api/conversations/${id}?${params}`, {
+          method: 'DELETE'
+        });
+
+        console.log('✅ Conversation deleted:', id);
+
+        // If we're currently viewing this conversation, clear it
+        if (currentConversationId === id) {
+          console.log('📝 Currently viewing deleted conversation, clearing chat');
+          chatContainer.innerHTML = '';
+          welcomeContainer.style.display = 'flex';
+          chatContainer.classList.remove('active');
+          currentConversationId = null;
+        }
+
+        // Reload list
+        await loadConversations();
+      } catch (error) {
+        console.error('❌ Failed to delete conversation:', error);
+        alert('Failed to delete conversation. Please try again.');
+      }
+    }
+
+    async function deleteAllConversations() {
+      const count = document.querySelectorAll('.history-item').length;
+            
+      if (!confirm(`Delete ALL ${count} conversations? This cannot be undone and will permanently remove all your conversation history.`)) {
+        console.log('🗑️ Delete all cancelled by user');
+        return;
+      }
+            
+      if (!confirm('Are you ABSOLUTELY sure? This action cannot be reversed.')) {
+        console.log('🗑️ Delete all cancelled by user (second confirmation)');
+        return;
+      }
+
+      try {
+        console.log('🗑️ Deleting all conversations...');
+                
+        // Get all conversation IDs
+        const historyItems = document.querySelectorAll('.history-item');
+        const conversionIds = Array.from(historyItems).map(item => parseInt(item.dataset.id));
+                
+        console.log(`🗑️ Deleting ${conversionIds.length} conversations...`);
+
+        // Delete each conversation
+        for (const id of conversionIds) {
+          try {
+            const params = new URLSearchParams();
+            if (anonId) params.append('anonId', anonId);
+
+            await safeJsonFetch(`/api/conversations/${id}?${params}`, {
+              method: 'DELETE'
+            });
+                        
+            console.log(`✅ Deleted conversation ${id}`);
+          } catch (err) {
+            console.warn(`⚠️ Failed to delete conversation ${id}:`, err);
+          }
+        }
+
+        console.log(`✅ All conversations deleted`);
+
+        // Clear current chat
+        chatContainer.innerHTML = '';
+        welcomeContainer.style.display = 'flex';
+        chatContainer.classList.remove('active');
+        currentConversationId = null;
+
+        // Reload history list
+        await loadConversations();
+                
+        alert('All conversations have been deleted.');
+      } catch (error) {
+        console.error('❌ Failed to delete all conversations:', error);
+        alert('Failed to delete all conversations. Please try again.');
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function manageSubscription() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      dropdown.classList.remove('active');
+
+      const email = localStorage.getItem('userEmail') || localStorage.getItem('veraGuestEmail');
+      
+      if (!email) {
+        alert('Unable to manage subscription: email not found. Please log in again.');
+        return;
+      }
+
+      console.log('� Opening subscription plans page...');
+      window.location.href = '/subscription.html';
+    }
+
+    function logout() {
+      if (!confirm('Are you sure you want to log out?')) return;
+
+      console.log('🚪 Logout initiated');
+            
+      fetch('/api/auth/logout', { method: 'POST' })
+        .then(response => {
+          console.log('✅ Logout endpoint called successfully');
+                    
+          // Clear all storage
+          console.log('🧹 Clearing localStorage...');
+          localStorage.clear();
+                    
+          console.log('🧹 Clearing sessionStorage...');
+          sessionStorage.clear();
+                    
+          // Redirect to home
+          console.log('🔄 Redirecting to homepage');
+          window.location.href = '/';
+        })
+        .catch(err => {
+          console.error('❌ Logout error:', err);
+                    
+          // Still clear local data and redirect even if endpoint fails
+          console.log('🧹 Clearing localStorage and sessionStorage...');
+          localStorage.clear();
+          sessionStorage.clear();
+                    
+          console.log('🔄 Redirecting to homepage');
+          window.location.href = '/';
+        });
+    }
+
+    function goToSettings() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      dropdown.classList.remove('active');
+
+      console.log('⚙️ Navigating to Settings');
+      window.location.href = '/settings.html';
+    }
+
+    // ============================================
+    // THEME MANAGEMENT
+    // ============================================
+
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      localStorage.setItem('veraTheme', theme);
+            
+      // Update header theme options (if present)
+      document.querySelectorAll('.theme-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      const headerOpt = document.querySelector(`.theme-${theme}`);
+      if (headerOpt) headerOpt.classList.add('active');
+
+      // Update dropdown theme buttons (hamburger menu)
+      document.querySelectorAll('.dropdown-theme-btn').forEach(btn => btn.classList.remove('active'));
+      const dropdownBtn = document.querySelector(`.dropdown-theme-btn.${theme}-btn`);
+      if (dropdownBtn) dropdownBtn.classList.add('active');
+    }
+
+    function toggleMenu() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      const backdrop = document.getElementById('menuBackdrop');
+      const isOpen = dropdown.classList.contains('active');
+      
+      if (isOpen) {
+        dropdown.classList.remove('active');
+        backdrop.classList.remove('active');
+      } else {
+        dropdown.classList.add('active');
+        backdrop.classList.add('active');
+      }
+      console.log('🍔 Menu toggled - now:', dropdown.classList.contains('active') ? 'OPEN' : 'CLOSED');
+    }
+
+    function closeMenu() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      const backdrop = document.getElementById('menuBackdrop');
+      if (dropdown) dropdown.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+
+    // Initialize menu handlers when DOM is ready
+    function initializeMenuHandlers() {
+      const dropdown = document.getElementById('hamburgerDropdown');
+      const backdrop = document.getElementById('menuBackdrop');
+      
+      if (!dropdown || !backdrop) {
+        console.error('🍔 Menu elements not found');
+        return;
+      }
+
+      console.log('🍔 Initializing menu handlers...');
+
+      // Close menu when clicking backdrop
+      backdrop.addEventListener('click', function() {
+        closeMenu();
+      });
+
+      // Close menu when clicking menu items
+      dropdown.querySelectorAll('.dropdown-item, .dropdown-theme-btn').forEach(item => {
+        item.addEventListener('click', function() {
+          closeMenu();
+        });
+      });
+
+      console.log('✅ Menu handlers initialized successfully');
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeMenuHandlers);
+    } else {
+      initializeMenuHandlers();
+    }
+
+    function updateStatusMessages() {
+      const messages = [
+        "Here for you",
+        "Present with you",
+        "Holding space",
+        "Witnessing your journey",
+        "Listening"
+      ];
+            
+      let index = 0;
+      setInterval(() => {
+        index = (index + 1) % messages.length;
+        document.getElementById('statusText').textContent = messages[index];
+      }, 5000);
+    }
+
+    // Panel management removed - journaling and grounding features removed
+
+  </script>
+</body>
+</html>
