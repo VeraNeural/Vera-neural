@@ -19,7 +19,7 @@ async function sendEmail(email, magicLink) {
         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'VERA <onboarding@resend.dev>',
+        from: 'VERA <noreply@veraneural.com>',
         to: email,
         subject: '✨ Your VERA 48-Hour Trial Magic Link',
         html: `
