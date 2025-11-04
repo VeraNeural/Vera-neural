@@ -4558,12 +4558,13 @@
       
       async function validateSession() {
         try {
-          // Get session email from cookie (fallback to localStorage)
+          // Get session email and token from cookies
           const cookies = Object.fromEntries(
             document.cookie.split('; ').map(c => c.split('=').map(decodeURIComponent))
           );
           
           const userEmail = cookies.session_email || localStorage.getItem('userEmail');
+          const sessionToken = cookies.session_token; // Get the session token from cookie
           const trialEnd = cookies.trial_end || localStorage.getItem('trialEnd');
           
           if (!userEmail) {
@@ -4571,16 +4572,23 @@
             window.location.href = '/checkout?reason=no_session';
             return false;
           }
+
+          if (!sessionToken) {
+            console.warn('⚠️ No session token found - redirecting to checkout');
+            window.location.href = `/checkout?email=${encodeURIComponent(userEmail)}&reason=no_session_token`;
+            return false;
+          }
           
-          // Validate session with server (HTTP-only cookie sent automatically)
+          // Validate session with server
           const response = await fetch('/api/auth/validate-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              email: userEmail
-              // Note: sessionToken is in HTTP-only cookie, not sent in body
+              email: userEmail,
+              sessionToken: sessionToken,
+              action: 'validate'
             }),
-            credentials: 'include' // Include cookies in request
+            credentials: 'include' // Include cookies in request (for other auth headers)
           });
           
           const data = await response.json();
