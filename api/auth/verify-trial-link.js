@@ -151,7 +151,7 @@ module.exports = async (req, res) => {
 
     // Set session cookies
     res.setHeader('Set-Cookie', [
-      `session_token=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Max-Age=604800; Path=/`,
+      `session_token=${sessionToken}; Secure; SameSite=Lax; Max-Age=604800; Path=/`,
       `session_email=${tokenData.email}; Secure; SameSite=Lax; Max-Age=604800; Path=/`
     ]);
 

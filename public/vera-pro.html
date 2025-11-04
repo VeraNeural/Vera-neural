@@ -4558,14 +4558,24 @@
       
       async function validateSession() {
         try {
-          // Get session email and token from cookies
-          const cookies = Object.fromEntries(
-            document.cookie.split('; ').map(c => c.split('=').map(decodeURIComponent))
-          );
+          // Parse cookies properly - handle special characters and hex values
+          const cookies = {};
+          document.cookie.split('; ').forEach(c => {
+            const [key, ...valueParts] = c.split('=');
+            if (key && valueParts.length > 0) {
+              cookies[key] = valueParts.join('='); // In case value contains '='
+            }
+          });
           
           const userEmail = cookies.session_email || localStorage.getItem('userEmail');
-          const sessionToken = cookies.session_token; // Get the session token from cookie
+          const sessionToken = cookies.session_token; // Get the session token from cookie (hex string)
           const trialEnd = cookies.trial_end || localStorage.getItem('trialEnd');
+          
+          console.log('[validateSession] Cookies found:', {
+            hasSessionEmail: !!cookies.session_email,
+            hasSessionToken: !!cookies.session_token,
+            sessionTokenLength: sessionToken?.length || 0
+          });
           
           if (!userEmail) {
             console.warn('⚠️ No session email found - redirecting to checkout');
@@ -4575,9 +4585,16 @@
 
           if (!sessionToken) {
             console.warn('⚠️ No session token found - redirecting to checkout');
+            console.warn('📋 Available cookies:', Object.keys(cookies));
             window.location.href = `/checkout?email=${encodeURIComponent(userEmail)}&reason=no_session_token`;
             return false;
           }
+          
+          console.log('[validateSession] Sending validation request with:', {
+            email: userEmail,
+            tokenLength: sessionToken.length,
+            action: 'validate'
+          });
           
           // Validate session with server
           const response = await fetch('/api/auth/validate-session', {
@@ -4592,6 +4609,12 @@
           });
           
           const data = await response.json();
+          
+          console.log('[validateSession] Response from server:', {
+            valid: data.valid,
+            status: response.status,
+            error: data.error
+          });
           
           if (!data.valid) {
             console.warn('❌ Session validation failed:', data.error);
