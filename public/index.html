@@ -837,7 +837,6 @@
     <div class="transition-messages">
         <div class="transition-word" id="word1">BREATHE</div>
         <div class="transition-word" id="word2">YOU ARE HERE</div>
-        <div class="transition-word" id="word3">I SEE YOU</div>
     </div>
 </div>
 
@@ -1007,31 +1006,21 @@
                 darkTransition.classList.remove('active');
                 mainContent.style.display = 'none';
             } else if (phase === 2) {
-                // PHASE 2: Dark transition with words
+                // PHASE 2: Dark transition with BREATHE
                 intro.classList.add('hidden');
                 darkTransition.classList.add('active');
                 
                 document.getElementById('word1').classList.add('show');
                 document.getElementById('word2').classList.remove('show');
-                document.getElementById('word3').classList.remove('show');
             } else if (phase === 3) {
-                // PHASE 3: Dark transition with more words
+                // PHASE 3: Dark transition with YOU ARE HERE
                 intro.classList.add('hidden');
                 darkTransition.classList.add('active');
                 
                 document.getElementById('word1').classList.add('show');
                 document.getElementById('word2').classList.add('show');
-                document.getElementById('word3').classList.remove('show');
             } else if (phase === 4) {
-                // PHASE 4: Final dark transition word
-                intro.classList.add('hidden');
-                darkTransition.classList.add('active');
-                
-                document.getElementById('word1').classList.add('show');
-                document.getElementById('word2').classList.add('show');
-                document.getElementById('word3').classList.add('show');
-            } else if (phase === 5) {
-                // PHASE 5: Welcome screen
+                // PHASE 4: Welcome screen
                 darkTransition.classList.remove('active');
                 
                 setTimeout(() => {
@@ -1049,10 +1038,10 @@
         // Advance phases instantly on user interaction
         let hasInteracted = false;
         document.addEventListener('click', () => {
-            if (currentPhase < 5 && !hasInteracted) {
+            if (currentPhase < 4 && !hasInteracted) {
                 hasInteracted = true;
                 console.log('🎯 USER CLICKED - ADVANCING PHASES INSTANTLY');
-            } else if (currentPhase < 5) {
+            } else if (currentPhase < 4) {
                 currentPhase++;
                 goToPhase(currentPhase);
                 console.log(`🎯 PHASE ${currentPhase} - INSTANT TRANSITION`);
@@ -1060,10 +1049,10 @@
         });
         
         document.addEventListener('touchstart', () => {
-            if (currentPhase < 5 && !hasInteracted) {
+            if (currentPhase < 4 && !hasInteracted) {
                 hasInteracted = true;
                 console.log('🎯 USER TOUCHED - ADVANCING PHASES INSTANTLY');
-            } else if (currentPhase < 5) {
+            } else if (currentPhase < 4) {
                 currentPhase++;
                 goToPhase(currentPhase);
                 console.log(`🎯 PHASE ${currentPhase} - INSTANT TRANSITION`);
@@ -1079,7 +1068,7 @@
             }
         }, 8000));
         
-        // PHASE 2: Start dark transition at 9s
+        // PHASE 2: Add BREATHE at 9s
         phaseTimeouts.push(setTimeout(() => {
             if (currentPhase === 2) {
                 currentPhase = 3;
@@ -1087,21 +1076,13 @@
             }
         }, 11000));
         
-        // PHASE 3: Add second word at 13s
+        // PHASE 3: Show welcome screen at 18s
         phaseTimeouts.push(setTimeout(() => {
             if (currentPhase === 3) {
                 currentPhase = 4;
                 goToPhase(4);
             }
-        }, 14000));
-        
-        // PHASE 4: Show welcome screen at 21s
-        phaseTimeouts.push(setTimeout(() => {
-            if (currentPhase === 4) {
-                currentPhase = 5;
-                goToPhase(5);
-            }
-        }, 21000));
+        }, 18000));
     });
 </script>
 </body>
